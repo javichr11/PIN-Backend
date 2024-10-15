@@ -62,10 +62,10 @@ exports.crearEventos = async (req, res) => {
 exports.obtenerEventos = async (req, res) => {
 
     try {
-        // Obtener todos los eventos sin ningún filtro
+    
         const { data, error } = await supabase
           .from('eventos')
-          .select('*'); // Selecciona todos los eventos
+          .select('*'); 
         if (error) {
           return res.status(500).json({ message: 'Error al obtener los eventos', error });
         }
