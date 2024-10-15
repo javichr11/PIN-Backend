@@ -3,9 +3,9 @@ const router = express.Router();
 const {obtenerEventos,crearEventos} = require('../controllers/eventController');
 
 // Ruta para registrar un evento
-router.post('/',crearEventos);
+router.post('/crear',crearEventos);
 
 // Ruta para obtener todos los eventos
-router.get('/',obtenerEventos);
+router.get('/obtener',obtenerEventos);
 
 module.exports = router;

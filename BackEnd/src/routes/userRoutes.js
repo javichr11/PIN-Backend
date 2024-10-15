@@ -3,9 +3,9 @@ const router = express.Router();
 const { registrarUsuario, obtenerUsuarios } = require('../controllers/userController');
 
 // Ruta para registrar un usuario
-router.post('/', registrarUsuario);
+router.post('/registrar', registrarUsuario);
 
 // Ruta para obtener todos los usuarios
-router.get('/', obtenerUsuarios);
+router.get('/obtener', obtenerUsuarios);
 
 module.exports = router;
