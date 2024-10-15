@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {obtenerEventos,crearEventos} = require('../controllers/userController');
+const {obtenerEventos,crearEventos} = require('../controllers/eventController');
 
 // Ruta para registrar un evento
 router.post('/',crearEventos);
