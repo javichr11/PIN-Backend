@@ -1,9 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const {obtenerEventos,crearEventos} = require('../controllers/eventController');
+const eventController = require('../controllers/eventController');
+const multer = require('multer');
 
-// Ruta para registrar un evento
-router.post('/crear',crearEventos);
+const upload = multer({ storage: multer.memoryStorage() });
+
+// Ruta para crear un evento (con la imagen)
+router.post('/crear', upload.single('foto'), eventController.crearEventos);
 
 // Ruta para obtener todos los eventos
 router.get('/obtener',obtenerEventos);
