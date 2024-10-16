@@ -9,6 +9,6 @@ const upload = multer({ storage: multer.memoryStorage() });
 router.post('/crear', upload.single('foto'), eventController.crearEventos);
 
 // Ruta para obtener todos los eventos
-router.get('/obtener',obtenerEventos);
+router.get('/obtener',eventController.obtenerEventos);
 
 module.exports = router;
