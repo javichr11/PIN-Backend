@@ -1,6 +1,6 @@
 const supabase = require('../config/supabase');
 // Crear un comentario
-export const createComment = async (req, res) => {
+exports.createComment = async (req, res) => {
     const { evento_id, usuario_id, content } = req.body;
   
     if (!evento_id || !usuario_id || !content) {
@@ -9,7 +9,7 @@ export const createComment = async (req, res) => {
   
     try {
       const { data, error } = await supabase
-        .from('comments')
+        .from('comentarios')
         .insert([{ evento_id, usuario_id, content }]);
   
       if (error) {
@@ -23,12 +23,12 @@ export const createComment = async (req, res) => {
   };
   
   // Obtener comentarios por evento
-  export const getCommentsByEvent = async (req, res) => {
+  exports.getCommentsByEvent = async (req, res) => {
     const { evento_id } = req.params;
   
     try {
       const { data, error } = await supabase
-        .from('comments')
+        .from('comentarios')
         .select('id, usuario_id, content, created_at')
         .eq('evento_id', evento_id);
   
@@ -43,8 +43,8 @@ export const createComment = async (req, res) => {
   };
   
   // Actualizar un comentario
-  export const updateComment = async (req, res) => {
-    const { comment_id } = req.params;
+  exports.updateComment = async (req, res) => {
+    const { comentario_id } = req.params;
     const { content, usuario_id } = req.body;
   
     if (!content || !usuario_id) {
@@ -53,12 +53,12 @@ export const createComment = async (req, res) => {
   
     try {
       const { data, error } = await supabase
-        .from('comments')
+        .from('comentarios')
         .update({ content })
-        .eq('id', comment_id)
+        .eq('id', comentario_id)
         .eq('usuario_id', usuario_id);
   
-      if (error || data.length === 0) {
+      if (!data || data.length === 0) {
         return res.status(404).json({ error: 'Comentario no encontrado o no autorizado' });
       }
   
@@ -69,8 +69,8 @@ export const createComment = async (req, res) => {
   };
   
   // Eliminar un comentario
-  export const deleteComment = async (req, res) => {
-    const { comment_id } = req.params;
+  exports.deleteComment = async (req, res) => {
+    const { comentario_id } = req.params;
     const { usuario_id } = req.body;
   
     if (!usuario_id) {
@@ -79,12 +79,12 @@ export const createComment = async (req, res) => {
   
     try {
       const { data, error } = await supabase
-        .from('comments')
+        .from('comentarios')
         .delete()
-        .eq('id', comment_id)
+        .eq('id', comentario_id)
         .eq('usuario_id', usuario_id);
   
-      if (error || data.length === 0) {
+      if (!data || data.length === 0) {
         return res.status(404).json({ error: 'Comentario no encontrado o no autorizado' });
       }
   
