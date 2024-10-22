@@ -42,7 +42,7 @@ console.log('Datos de carga:', uploadData);
           }
 
           if (!publicUrlData.publicUrl) {
-            return res.status(500).json({ message: 'No se pudo obtener la URL pública de la imagen' });
+            return res.status(500).json({ message: 'No se ha conseguido la URL pública de la imagen' });
           }
 
           fotoURL = publicUrlData.publicURL;
