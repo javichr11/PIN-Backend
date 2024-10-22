@@ -28,15 +28,19 @@ exports.crearEventos = async (req, res) => {
           return res.status(500).json({ message: 'Error al subir la imagen', error: uploadError });
         }
   
-        const { publicURL, error: publicUrlError } = supabase
-          .storage
-          .from('event-image')
-          .getPublicUrl(fileName);  // Obtener URL pública de la imagen
-  
-        if (publicUrlError) {
-          console.error('Error al obtener la URL pública:', publicUrlError);
-          return res.status(500).json({ message: 'Error al obtener la URL de la imagen', error: publicUrlError });
-        }
+        const { data: { publicURL }, error: publicUrlError } = supabase
+        .storage
+        .from('event-image')
+        .getPublicUrl(fileName);  // Obtener URL pública de la imagen
+      
+      if (publicUrlError) {
+        console.error('Error al obtener la URL pública:', publicUrlError);
+        return res.status(500).json({ message: 'Error al obtener la URL de la imagen', error: publicUrlError });
+      }
+      
+      if (!publicURL) {
+        return res.status(500).json({ message: 'No se pudo obtener la URL pública de la imagen' });
+      }
   
         fotoURL = publicURL.publicURL;
       }
