@@ -1,26 +1,37 @@
 const supabase = require('../config/supabase');
 // Crear un comentario
 exports.createComment = async (req, res) => {
-    const { evento_id, usuario_id, content } = req.body;
-  
-    if (!evento_id || !usuario_id || !content) {
+  const { evento_id, usuario_id, content } = req.body;
+
+  // Depurar para verificar que la solicitud llega
+  console.log("Solicitud recibida para crear comentario:", req.body);
+
+  if (!evento_id || !usuario_id || !content) {
       return res.status(400).json({ error: 'Faltan campos obligatorios' });
-    }
-  
-    try {
+  }
+
+  try {
       const { data, error } = await supabase
-        .from('comentarios')
-        .insert([{ evento_id, usuario_id, content }]);
-  
+          .from('comentarios')
+          .insert([{ evento_id, usuario_id, content }]);
+
       if (error) {
-        return res.status(500).json({ error: 'Error al crear comentario' });
+          console.error("Error al crear comentario en Supabase:", error);
+          return res.status(500).json({ 
+              error: 'Error al crear comentario', 
+              details: error.message || error 
+          });
       }
-  
+
       res.status(201).json({ message: 'Comentario creado con éxito', data });
-    } catch (err) {
-      res.status(500).json({ error: 'Error interno del servidor' });
-    }
-  };
+  } catch (err) {
+      console.error("Error interno del servidor:", err);
+      res.status(500).json({ 
+          error: 'Error interno del servidor', 
+          details: err.message 
+      });
+  }
+};
   
   // Obtener comentarios por evento
   exports.getCommentsByEvent = async (req, res) => {
