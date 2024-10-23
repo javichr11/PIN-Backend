@@ -73,19 +73,28 @@ exports.crearEventos = async (req, res) => {
   };
   
 
-exports.obtenerEventos = async (req, res) => {
-
+  exports.obtenerEventos = async (req, res) => {
     try {
-    
-        const { data, error } = await supabase
-          .from('eventos')
-          .select('*'); 
-        if (error) {
-          return res.status(500).json({ message: 'Error al obtener los eventos', error });
-        }
-        // Devolver la lista de eventos
-        return res.status(200).json({ message: 'Eventos obtenidos con éxito', data });
-      } catch (error) {
-        return res.status(500).json({ message: 'Error del servidor', error });
+      const { data, error } = await supabase
+        .from('eventos')
+        .select('*'); // Asegúrate de que los campos necesarios estén aquí
+  
+      if (error) {
+        return res.status(500).json({ message: 'Error al obtener los eventos', error });
       }
+  
+      // Verificar que los datos contienen URLs de imagen
+      const eventosConImagenes = data.map(evento => {
+        return {
+          ...evento,
+          imagen: `${supabase.storage.from('event-image').getPublicUrl(evento.imagen).publicUrl}` // Asegúrate de que este campo sea correcto
+        };
+      });
+  
+      // Devolver la lista de eventos
+      return res.status(200).json({ message: 'Eventos obtenidos con éxito', data: eventosConImagenes });
+    } catch (error) {
+      return res.status(500).json({ message: 'Error del servidor', error });
+    }
   };
+  
