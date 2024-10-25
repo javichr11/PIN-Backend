@@ -87,7 +87,7 @@ exports.crearEventos = async (req, res) => {
       const eventosConImagenes = data.map(evento => {
         return {
           ...evento,
-          foto: `${supabase.storage.from('event-image').getPublicUrl(evento.foto).publicUrl}` // Asegúrate de que este campo sea correcto
+          imagen: `${supabase.storage.from('event-image').getPublicUrl(evento.foto).publicUrl}` // Asegúrate de que este campo sea correcto
         };
       });
   
