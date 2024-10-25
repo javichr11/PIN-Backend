@@ -86,6 +86,7 @@ exports.crearEventos = async (req, res) => {
       if (error) {
         return res.status(500).json({ message: 'Error al obtener los eventos', error });
       }
+      return res.status(200).json({message: 'Los eventos se deberían de enviar bien'});
     }catch(error){
         return res.status(500).json({ message: 'Error del servidor', error });
     }
