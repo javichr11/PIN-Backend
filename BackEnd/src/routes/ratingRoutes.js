@@ -1,5 +1,5 @@
 const express = require('express');
-const { createRating, getRatingsByUser, getRatingsByEvent, updateRating, deleteRating } = require('../controllers/RatingController.js');
+const { createRating, getRatingsByUser, getRatingsByEvent, updateRating, deleteRating } = require('../controllers/ratingController.js');
 
 const router = express.Router();
 
