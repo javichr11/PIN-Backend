@@ -17,6 +17,10 @@ exports.crearEventos = async (req, res) => {
   
         let fotoURL = null;
         if (foto) {
+            if (!foto.buffer) {
+                return res.status(400).json({ message: 'No se recibió la imagen' });
+            }
+
             const fileName = `${uuidv4()}_${foto.originalname}`; // Nombre único para la imagen
             const { data: uploadData, error: uploadError } = await supabase
                 .storage
@@ -24,7 +28,7 @@ exports.crearEventos = async (req, res) => {
                 .upload(fileName, foto.buffer);  // Subir imagen a Supabase
   
             if (uploadError) {
-                console.error('Error al subir la imagen:', uploadError);
+                console.error('Error al subir la imagen:', uploadError.message);
                 return res.status(500).json({ message: 'Error al subir la imagen', error: uploadError });
             }
   
@@ -70,8 +74,8 @@ exports.crearEventos = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ message: 'Error del servidor', error });
     }
-  };
-  
+};
+
 
   exports.obtenerEventos = async (req, res) => {
     try {
@@ -82,23 +86,7 @@ exports.crearEventos = async (req, res) => {
       if (error) {
         return res.status(500).json({ message: 'Error al obtener los eventos', error });
       }
-<<<<<<< HEAD
-};
-=======
-  
-      // Verificar que los datos contienen URLs de imagen
-      const eventosConImagenes = data.map(evento => {
-        return {
-          ...evento,
-          imagen: `${supabase.storage.from('event-image').getPublicUrl(evento.imagen).publicUrl}` // Asegúrate de que este campo sea correcto
-        };
-      });
-  
-      // Devolver la lista de eventos
-      return res.status(200).json({ message: 'Eventos obtenidos con éxito', data: eventosConImagenes });
-    } catch (error) {
-      return res.status(500).json({ message: 'Error del servidor', error });
+    }catch(error){
+        return res.status(500).json({ message: 'Error del servidor', error });
     }
-  };
-  
->>>>>>> main
+};
