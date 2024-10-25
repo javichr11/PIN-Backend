@@ -81,7 +81,7 @@ exports.crearEventos = async (req, res) => {
     try {
       const { data, error } = await supabase
         .from('eventos')
-        .select('*'); // Asegúrate de que los campos necesarios estén aquí
+        .select('*');
   
       if (error) {
         return res.status(500).json({ message: 'Error al obtener los eventos', error });
@@ -113,4 +113,4 @@ exports.crearEventos = async (req, res) => {
       } catch (err) {
         return res.status(500).json({ error: 'Error en el servidor' });
       }
-  }
+  };
