@@ -3,6 +3,8 @@ const cors = require('cors');
 const usuarioRoutes = require('./routes/userRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const commentsRoutes = require('./routes/commentsRoutes');
+const ratingRoutes = require('./routes/ratingRoutes');
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -15,6 +17,7 @@ app.use(express.json());
 app.use('/usuario', usuarioRoutes);
 app.use('/evento', eventRoutes);
 app.use('/comentario', commentsRoutes);
+app.use('/valoracion', ratingRoutes)
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Servidor escuchando en http://0.0.0.0:${PORT}`);
