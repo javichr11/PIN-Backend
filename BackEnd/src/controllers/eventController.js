@@ -1,57 +1,73 @@
-const express = require('express');
-const multer = require('multer');
-const { v4: uuidv4 } = require('uuid');
 const supabase = require('../config/supabase');
+const { v4: uuidv4 } = require('uuid');
+const multer = require('multer');
 
-const app = express();
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-app.post('/ruta', upload.single('foto'), async (req, res) => {
+exports.crearEventos = async (req, res) => {
     try {
         const { usuario_id, nombre, descripcion, tematica, ubicacion, aforo, fecha, duracion } = req.body;
-        const foto = req.file;
-
+        const foto = req.file; // La imagen cargada
+  
+        // Verificación de datos obligatorios
         if (!usuario_id || !nombre || !fecha || !ubicacion || !aforo || !tematica) {
             return res.status(400).json({ message: 'Faltan datos obligatorios' });
         }
-
+  
         let fotoURL = null;
         if (foto) {
             if (!foto.buffer) {
                 return res.status(400).json({ message: 'No se recibió la imagen' });
             }
 
-            const fileName = `${uuidv4()}_${foto.originalname}`;
-            const { data: uploadData, error: uploadError } = await supabase.storage.from('event-image').upload(fileName, foto.buffer);
-
+            const fileName = `${uuidv4()}_${foto.originalname}`; // Nombre único para la imagen
+            const { data: uploadData, error: uploadError } = await supabase
+                .storage
+                .from('event-image')
+                .upload(fileName, foto.buffer);  // Subir imagen a Supabase
+  
             if (uploadError) {
                 console.error('Error al subir la imagen:', uploadError.message);
                 return res.status(500).json({ message: 'Error al subir la imagen', error: uploadError });
             }
-
-            const { data: publicUrlData, error: publicUrlError } = supabase.storage.from('event-image').getPublicUrl(fileName);
+  
+            // Obtener la URL pública de la imagen
+            const { data: publicUrlData, error: publicUrlError } = supabase
+                .storage
+                .from('event-image')
+                .getPublicUrl(fileName);  // Obtener URL pública de la imagen
+  
             if (publicUrlError) {
                 return res.status(500).json({ message: 'Error al obtener la URL de la imagen', error: publicUrlError });
             }
-
+  
             if (!publicUrlData.publicUrl) {
                 return res.status(500).json({ message: 'No se ha conseguido la URL pública de la imagen' });
             }
-
-            fotoURL = publicUrlData.publicUrl;
+  
+            fotoURL = publicUrlData.publicUrl;  // Asigna la URL pública correctamente
         }
-
-        const { data, error } = await supabase.from('eventos').insert([{ usuario_id, nombre, descripcion, tematica, ubicacion, aforo, fecha, duracion, foto: fotoURL }]);
+  
+        // Insertar el evento en la base de datos
+        const { data, error } = await supabase
+            .from('eventos')
+            .insert([
+                {
+                    usuario_id,
+                    nombre,
+                    descripcion,
+                    tematica,
+                    ubicacion,
+                    aforo,
+                    fecha,
+                    duracion,
+                    foto: fotoURL
+                }
+            ]);
+  
         if (error) {
-            return res.status(500).json({ message: 'Error al crear el evento', error });
-        }
-
-        return res.status(201).json({ message: 'Evento creado con éxito', data });
-    } catch (error) {
-        return res.status(500).json({ message: 'Error del servidor', error });
-    }
-});
+  
 
   
 
