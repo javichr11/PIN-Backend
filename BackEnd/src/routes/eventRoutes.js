@@ -11,6 +11,6 @@ router.post('/crear', upload.single('foto'), eventController.crearEventos);
 // Ruta para obtener todos los eventos
 router.get('/obtener',eventController.obtenerEventos);
 // Ruta para eliminar un evento
-router.delete('/eliminar/:id', eventController.eliminarEvento);
+//router.delete('/eliminar/:id', eventController.eliminarEvento);
 
 module.exports = router;
