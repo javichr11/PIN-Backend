@@ -91,3 +91,26 @@ exports.crearEventos = async (req, res) => {
         return res.status(500).json({ message: 'Error del servidor', error });
     }
 };
+exports.eliminarEvento = async (req, res) => {
+
+    const {id} = req.params;
+
+    try {
+        const { data, error } = await supabase
+          .from('eventos')
+          .delete()
+          .eq('id', id);
+    
+        if (error) {
+          return res.status(400).json({ error: error.message });
+        }
+    
+        if (data.length === 0) {
+          return res.status(404).json({ message: 'Evento no encontrado' });
+        }
+    
+        return res.status(200).json({ message: 'Evento eliminado exitosamente' });
+      } catch (err) {
+        return res.status(500).json({ error: 'Error en el servidor' });
+      }
+  };
