@@ -114,3 +114,52 @@ exports.eliminarEvento = async (req, res) => {
         return res.status(500).json({ error: 'Error en el servidor' });
       }
   };
+
+exports.inscribirEvento = async (req, res) => {
+
+    const {eventID, userID} = req.body;
+
+    try{
+
+        const {data, error:fetchError} = await supabase
+        .from('eventos')
+        .select('id, aforo, inscritos')
+        .eq('id', eventID)
+        .single
+
+        if (fetchError) {
+            return res.status(400).json({ error: fetchError.message });
+        }
+
+        if (!data) {
+            return res.status(404).json({ message: 'Evento no encontrado' });
+        }
+
+        if(data.inscritos < data.aforo){
+            const { data, error: updateError } = await supabase
+                .from('eventos')
+                .update({ inscritos: data.inscritos + 1 })
+                .eq('id', eventId);
+
+
+                if (updateError) {
+                    return res.status(400).json({ error: updateError.message });
+                }
+
+            const { data: inscripcionData, error: inscripcionError } = await supabase
+                .from('inscripciones')
+                .insert({eventId, userId });
+
+            if(inscripcionError){
+                return res.status(400).json({message:'Error al crear la inscripción al evento'});
+            }
+
+            return res.status(200).json({ message: 'Inscripción exitosa' });
+        }else {
+            return res.status(400).json({ message: 'Aforo completo' });
+        }
+    }catch(error){
+        return res.status(500).json({message:'Error de servidor'});
+    }
+
+}
