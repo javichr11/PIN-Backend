@@ -116,51 +116,50 @@ exports.eliminarEvento = async (req, res) => {
   };
 
 exports.inscribirAEvento = async (req, res) => {
+    const { eventID, userID } = req.body;
 
-    const {eventID, userID} = req.body;
+    try {
 
-    try{
-
-        const {data, error:fetchError} = await supabase
-        .from('eventos')
-        .select('*')
-        .eq('id', eventID)
-        .single();
+        const { data: eventoData, error: fetchError } = await supabase
+            .from('eventos')
+            .select('*')
+            .eq('id', eventID)
+            .single();
 
         if (fetchError) {
             return res.status(400).json({ error: fetchError.message });
         }
 
-        if (!data) {
+        if (!eventoData) {
             return res.status(404).json({ message: 'Evento no encontrado' });
         }
 
-        if(data.inscritos < data.aforo){
-            const { data, error: updateError } = await supabase
+        if (eventoData.inscritos < eventoData.aforo) {
+            // Cambia el nombre de la variable a 'updateData'
+            const { data: updateData, error: updateError } = await supabase
                 .from('eventos')
-                .update({ inscritos: data.inscritos + 1 })
+                .update({ inscritos: eventoData.inscritos + 1 })
                 .eq('id', eventID);
 
+            if (updateError) {
+                return res.status(400).json({ error: updateError.message });
+            }
 
-                if (updateError) {
-                    return res.status(400).json({ error: updateError.message });
-                }
-
+            // Cambia el nombre de la variable a 'inscripcionData'
             const { data: inscripcionData, error: inscripcionError } = await supabase
                 .from('inscripciones')
-                .insert({eventID, userID});
+                .insert({ eventID, userID });
 
-            if(inscripcionError){
-                return res.status(400).json({message:'Error al crear la inscripción al evento'});
+            if (inscripcionError) {
+                return res.status(400).json({ message: 'Error al crear la inscripción al evento' });
             }
 
             return res.status(200).json({ message: 'Inscripción exitosa' });
-        }else {
+        } else {
             return res.status(400).json({ message: 'Aforo completo' });
         }
-    }catch(error){
+    } catch (error) {
         console.error("Error:", error);
         return res.status(500).json({ message: 'Error de servidor', error: error.message });
     }
-
 };
