@@ -125,7 +125,7 @@ exports.inscribirAEvento = async (req, res) => {
         .from('eventos')
         .select('*')
         .eq('id', eventID)
-        .single
+        .single();
 
         if (fetchError) {
             return res.status(400).json({ error: fetchError.message });
