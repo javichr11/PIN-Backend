@@ -159,7 +159,8 @@ exports.inscribirAEvento = async (req, res) => {
             return res.status(400).json({ message: 'Aforo completo' });
         }
     }catch(error){
-        return res.status(500).json({message:'Error de servidor'});
+        console.error("Error:", error);
+        return res.status(500).json({ message: 'Error de servidor', error: error.message });
     }
 
 };
