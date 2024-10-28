@@ -13,6 +13,6 @@ router.get('/obtener',eventController.obtenerEventos);
 // Ruta para eliminar un evento
 router.delete('/eliminar/:id', eventController.eliminarEvento);
 // Ruta para inscribirse a un evento
-router.post('inscribir', eventController.inscribirAEvento);
+router.post('/inscribir', eventController.inscribirAEvento);
 
 module.exports = router;
