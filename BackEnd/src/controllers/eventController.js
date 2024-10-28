@@ -123,7 +123,7 @@ exports.inscribirAEvento = async (req, res) => {
 
         const {data, error:fetchError} = await supabase
         .from('eventos')
-        .select('id, aforo, inscritos')
+        .select('*')
         .eq('id', eventID)
         .single
 
