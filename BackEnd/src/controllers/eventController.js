@@ -139,7 +139,7 @@ exports.inscribirAEvento = async (req, res) => {
             const { data, error: updateError } = await supabase
                 .from('eventos')
                 .update({ inscritos: data.inscritos + 1 })
-                .eq('id', eventId);
+                .eq('id', eventID);
 
 
                 if (updateError) {
@@ -148,7 +148,7 @@ exports.inscribirAEvento = async (req, res) => {
 
             const { data: inscripcionData, error: inscripcionError } = await supabase
                 .from('inscripciones')
-                .insert({eventId, userId });
+                .insert({eventID, userID});
 
             if(inscripcionError){
                 return res.status(400).json({message:'Error al crear la inscripción al evento'});
@@ -162,4 +162,4 @@ exports.inscribirAEvento = async (req, res) => {
         return res.status(500).json({message:'Error de servidor'});
     }
 
-}
+};
