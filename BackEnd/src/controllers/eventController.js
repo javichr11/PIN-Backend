@@ -150,8 +150,7 @@ exports.inscribirAEvento = async (req, res) => {
                 .insert({ eventID, userID });
 
             if (inscripcionError) {
-                console.log(inscripcionError);
-                return res.status(400).json({ message: 'Error al crear la inscripción al evento' });
+                return res.status(400).json({ message: 'Error al crear la inscripción al evento', error: inscripcionError});
             }
 
             return res.status(200).json({ message: 'Inscripción exitosa' });
