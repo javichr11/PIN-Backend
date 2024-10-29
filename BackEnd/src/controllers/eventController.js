@@ -145,12 +145,12 @@ exports.inscribirAEvento = async (req, res) => {
                 return res.status(400).json({ error: updateError.message });
             }
 
-            // Cambia el nombre de la variable a 'inscripcionData'
             const { data: inscripcionData, error: inscripcionError } = await supabase
                 .from('inscripciones')
                 .insert({ eventID, userID });
 
             if (inscripcionError) {
+                console.log(inscripcionError);
                 return res.status(400).json({ message: 'Error al crear la inscripción al evento' });
             }
 
