@@ -115,11 +115,10 @@ exports.eliminarEvento = async (req, res) => {
       }
   };
 
-exports.inscribirAEvento = async (req, res) => {
+  exports.inscribirAEvento = async (req, res) => {
     const { eventID, userID } = req.body;
 
     try {
-
         const { data: eventoData, error: fetchError } = await supabase
             .from('eventos')
             .select('*')
@@ -133,9 +132,23 @@ exports.inscribirAEvento = async (req, res) => {
         if (!eventoData) {
             return res.status(404).json({ message: 'Evento no encontrado' });
         }
+        
+        const { data: existingInscription, error: checkError } = await supabase
+            .from('inscripciones')
+            .select('*')
+            .eq('eventID', eventID)
+            .eq('userID', userID)
+            .single();
+
+        if (checkError) {
+            return res.status(400).json({ error: checkError.message });
+        }
+
+        if (existingInscription) {
+            return res.status(400).json({ message: 'El usuario ya está inscrito en este evento' });
+        }
 
         if (eventoData.inscritos < eventoData.aforo) {
-            // Cambia el nombre de la variable a 'updateData'
             const { data: updateData, error: updateError } = await supabase
                 .from('eventos')
                 .update({ inscritos: eventoData.inscritos + 1 })
@@ -150,7 +163,7 @@ exports.inscribirAEvento = async (req, res) => {
                 .insert({ eventID, userID });
 
             if (inscripcionError) {
-                return res.status(400).json({ message: 'Error al crear la inscripción al evento', error: inscripcionError});
+                return res.status(400).json({ message: 'Error al crear la inscripción al evento', error: inscripcionError });
             }
 
             return res.status(200).json({ message: 'Inscripción exitosa' });
@@ -162,3 +175,4 @@ exports.inscribirAEvento = async (req, res) => {
         return res.status(500).json({ message: 'Error de servidor', error: error.message });
     }
 };
+
