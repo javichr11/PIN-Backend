@@ -105,12 +105,9 @@ exports.eliminarEvento = async (req, res) => {
 
         if (error) {
             console.error('Error al eliminar el evento:', error);
-            return res.status(400).json({ error: error.message });
+            return res.status(400).json({ error: error.message, id });
         }
 
-        if (data.length === 0) {
-            return res.status(404).json({ message: 'Evento no encontrado' });
-        }
         // Aquí asumimos que data tiene el evento eliminado, podrías devolverlo si lo necesitas
         return res.status(200).json({ message: 'Evento eliminado exitosamente' });
     } catch (err) {
