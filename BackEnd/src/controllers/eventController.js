@@ -127,8 +127,10 @@ exports.eliminarEvento = async (req, res) => {
 };
 
 
-  exports.inscribirAEvento = async (req, res) => {
+exports.inscribirAEvento = async (req, res) => {
     const { eventID, userID } = req.body;
+
+    console.log('eventID:', eventID, 'userID:', userID);
 
     try {
         const { data: eventoData, error: fetchError } = await supabase
@@ -138,10 +140,12 @@ exports.eliminarEvento = async (req, res) => {
             .single();
 
         if (fetchError) {
+            console.log('Fetch error:', fetchError);
             return res.status(400).json({ error: fetchError.message });
         }
 
         if (!eventoData) {
+            console.log('Evento no encontrado');
             return res.status(404).json({ message: 'Evento no encontrado' });
         }
 
@@ -153,10 +157,12 @@ exports.eliminarEvento = async (req, res) => {
             .single();
 
         if (checkError) {
+            console.log('Check error:', checkError);
             return res.status(400).json({ error: checkError.message });
         }
 
         if (existingInscription) {
+            console.log('El usuario ya está inscrito en este evento');
             return res.status(400).json({ message: 'El usuario ya está inscrito en este evento' });
         }
 
@@ -167,6 +173,7 @@ exports.eliminarEvento = async (req, res) => {
                 .eq('id', eventID);
 
             if (updateError) {
+                console.log('Update error:', updateError);
                 return res.status(400).json({ error: updateError.message });
             }
 
@@ -175,11 +182,13 @@ exports.eliminarEvento = async (req, res) => {
                 .insert({ eventID, userID });
 
             if (inscripcionError) {
+                console.log('Inscripción error:', inscripcionError);
                 return res.status(400).json({ message: 'Error al crear la inscripción al evento', error: inscripcionError });
             }
 
             return res.status(200).json({ message: 'Inscripción exitosa' });
         } else {
+            console.log('Aforo completo');
             return res.status(400).json({ message: 'Aforo completo' });
         }
     } catch (error) {
@@ -187,4 +196,5 @@ exports.eliminarEvento = async (req, res) => {
         return res.status(500).json({ message: 'Error de servidor', error: error.message });
     }
 };
+
 
