@@ -98,6 +98,17 @@ exports.eliminarEvento = async (req, res) => {
     console.log('El id recibido es: ', id);
 
     try {
+
+        const {data: dataInsc, error: errorInsc} = await supabase
+            .from('inscripciones')
+            .delete()
+            .eq('eventID', id);
+
+        if(errorInsc){
+            console.error('Error al eliminar la inscripción:', errorInsc);
+            return res.status(400).json({message: 'La inscripción no ha sido encontrada'});
+        }
+
         const { data, error } = await supabase
             .from('eventos')
             .delete()
@@ -108,7 +119,6 @@ exports.eliminarEvento = async (req, res) => {
             return res.status(400).json({ error: error.message, id });
         }
 
-        // Aquí asumimos que data tiene el evento eliminado, podrías devolverlo si lo necesitas
         return res.status(200).json({ message: 'Evento eliminado exitosamente' });
     } catch (err) {
         console.error('Error en el servidor:', err);
