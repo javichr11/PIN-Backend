@@ -128,6 +128,7 @@ exports.eliminarEvento = async (req, res) => {
 
 
 exports.inscribirAEvento = async (req, res) => {
+    
     const { eventID, userID } = req.body;
 
     console.log('eventID:', eventID, 'userID:', userID);
