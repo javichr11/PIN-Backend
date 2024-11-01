@@ -49,18 +49,3 @@ exports.obtenerUsuarios = async (req, res) => {
     res.status(200).json(data);
   };
 
-
-exports.obtenerUsuarios = async (req, res) => {
-
-     console.log("Recibido...")
-
-    const { data, error } = await supabase
-      .from('usuarios')
-      .select('*');
-  
-    if (error) {
-      return res.status(400).json({ error: error.message });
-    }
-  
-    res.status(200).json(data);
-  };
