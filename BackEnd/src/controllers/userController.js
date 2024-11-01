@@ -1,7 +1,5 @@
 const supabase = require('../config/supabase');
 
-const supabase = require('../config/supabase');
-
 exports.registrarUsuario = async (req, res) => { 
   console.log("Recibido...");
 
