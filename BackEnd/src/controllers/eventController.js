@@ -128,12 +128,18 @@ exports.eliminarEvento = async (req, res) => {
 
 
 exports.inscribirAEvento = async (req, res) => {
-    
     const { eventID, userID } = req.body;
+
+    // Verificar que ambos valores están definidos
+    if (!eventID || !userID) {
+        console.log('eventID o userID no proporcionados');
+        return res.status(400).json({ message: 'Falta eventID o userID en la petición' });
+    }
 
     console.log('eventID:', eventID, 'userID:', userID);
 
     try {
+        // Obtener el evento específico
         const { data: eventoData, error: fetchError } = await supabase
             .from('eventos')
             .select('*')
@@ -150,6 +156,7 @@ exports.inscribirAEvento = async (req, res) => {
             return res.status(404).json({ message: 'Evento no encontrado' });
         }
 
+        // Verificar si el usuario ya está inscrito en el evento
         const { data: existingInscription, error: checkError } = await supabase
             .from('inscripciones')
             .select('*')
@@ -157,17 +164,27 @@ exports.inscribirAEvento = async (req, res) => {
             .eq('userID', userID)
             .single();
 
-        if (checkError) {
+        if (checkError && checkError.code !== 'PGRST116') { // Manejar error sólo si no es "no row returned"
             console.log('Check error:', checkError);
             return res.status(400).json({ error: checkError.message });
         }
 
         if (existingInscription) {
-            console.log('El usuario ya está inscrito en este evento');
             return res.status(400).json({ message: 'El usuario ya está inscrito en este evento' });
         }
 
+        // Comprobar aforo y realizar inscripción
         if (eventoData.inscritos < eventoData.aforo) {
+            const { data: inscripcionData, error: inscripcionError } = await supabase
+                .from('inscripciones')
+                .insert({ eventID, userID });
+
+            if (inscripcionError) {
+                console.log('Inscripción error:', inscripcionError);
+                return res.status(400).json({ message: 'Error al crear la inscripción al evento', error: inscripcionError });
+            }
+
+            // Actualizar el número de inscritos
             const { data: updateData, error: updateError } = await supabase
                 .from('eventos')
                 .update({ inscritos: eventoData.inscritos + 1 })
@@ -176,15 +193,6 @@ exports.inscribirAEvento = async (req, res) => {
             if (updateError) {
                 console.log('Update error:', updateError);
                 return res.status(400).json({ error: updateError.message });
-            }
-
-            const { data: inscripcionData, error: inscripcionError } = await supabase
-                .from('inscripciones')
-                .insert({ eventID, userID });
-
-            if (inscripcionError) {
-                console.log('Inscripción error:', inscripcionError);
-                return res.status(400).json({ message: 'Error al crear la inscripción al evento', error: inscripcionError });
             }
 
             return res.status(200).json({ message: 'Inscripción exitosa' });
@@ -197,5 +205,6 @@ exports.inscribirAEvento = async (req, res) => {
         return res.status(500).json({ message: 'Error de servidor', error: error.message });
     }
 };
+
 
 
