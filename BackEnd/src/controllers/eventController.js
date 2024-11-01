@@ -205,6 +205,9 @@ exports.inscribirAEvento = async (req, res) => {
         return res.status(500).json({ message: 'Error de servidor', error: error.message });
     }
 };
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> javi
