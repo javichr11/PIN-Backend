@@ -12,7 +12,9 @@ exports.registrarUsuario = async (req, res) => {
     .eq('movil', movil)
     .single();
 
+  // Manejo de errores en la verificación del número de teléfono
   if (findErrorByPhone && findErrorByPhone.code !== 'PGRST116') { // PGRST116 indica que no se encontraron resultados
+    console.error("Error al verificar el número de teléfono:", findErrorByPhone);
     return res.status(500).json({ error: "Error al verificar el número de teléfono" });
   }
 
@@ -28,11 +30,13 @@ exports.registrarUsuario = async (req, res) => {
     .eq('nombre_usuario', nombre_usuario)
     .single();
 
+  // Manejo de errores en la verificación del nombre de usuario
   if (findErrorByNickname && findErrorByNickname.code !== 'PGRST116') { // PGRST116 indica que no se encontraron resultados
+    console.error("Error al verificar el nombre de usuario:", findErrorByNickname);
     return res.status(500).json({ error: "Error al verificar el nombre de usuario" });
   }
 
-  // Si el nickname ya está registrado, devuelve un error
+  // Si el nombre de usuario ya está registrado, devuelve un error
   if (existingUserByNickname) {
     return res.status(400).json({ error: "El nombre de usuario ya está registrado" });
   }
@@ -42,12 +46,15 @@ exports.registrarUsuario = async (req, res) => {
     .from('usuarios')
     .insert([{ nombre, edad, password, movil, nombre_usuario }]);
 
+  // Manejo de errores en la inserción
   if (error) {
+    console.error("Error al registrar el usuario:", error);
     return res.status(400).json({ error: error.message });
   }
 
   res.status(201).json({ message: 'Usuario registrado con éxito', data });
 };
+
 
 
 
