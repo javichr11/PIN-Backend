@@ -89,13 +89,14 @@ exports.registrarUsuario = async (req, res) => {
         foto: fotoURL,
         nombre_usuario,
         movil
-      }]);
+      }
+    ]);
 
     if (error) {
       return res.status(500).json({ message: 'Error al crear el usuario', error });
     }
 
-    res.status(201).json({ message: 'Usuario registrado con éxito', data });
+    return res.status(201).json({ message: 'Usuario registrado con éxito', data });
   } catch (error) {
     return res.status(500).json({ message: 'Error del servidor', error });
   }
