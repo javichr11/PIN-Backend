@@ -1,12 +1,12 @@
-const express = require('express');
+const express = require('../config/supabase');
 const router = express.Router();
-const { registrarUsuario, obtenerUsuarios } = require('../controllers/userController');
+const userController = require('../controllers/userController');
 const upload = require('multer')({ storage: multer.memoryStorage() });
 
 // Ruta para registrar un usuario
 //router.post('/registrar', registrarUsuario);
-router.post('/usuario/registrar', upload.single('foto'), registrarUsuario);
+router.post('/usuario/registrar', upload.single('foto'), userController.registrarUsuario);
 // Ruta para obtener todos los usuarios
-router.get('/obtener', obtenerUsuarios);
+router.get('/obtener', userController.obtenerUsuarios);
 
 module.exports = router;
