@@ -8,7 +8,7 @@ const upload = multer({ storage: storage });
 exports.registrarUsuario = async (req, res) => {
   try {
     const { nombre, edad, password, nombre_usuario, movil } = req.body;
-    const foto = req.body.foto;
+    const foto = req.file;
 
     const camposFaltantes = [];
       if (!nombre) camposFaltantes.push('nombre');
@@ -16,7 +16,7 @@ exports.registrarUsuario = async (req, res) => {
       if (!password) camposFaltantes.push('password');
       if (!nombre_usuario) camposFaltantes.push('nombre_usuario');
       if (!movil) camposFaltantes.push('movil');
-      if (!foto) camposFaltantes.push('foto');
+      //if (!foto) camposFaltantes.push('foto');
 
 
       // Si hay campos faltantes, devolver un error
