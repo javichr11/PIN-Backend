@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
-const upload = require('multer')({ storage: multer.memoryStorage() });
+const upload = multer({ storage: multer.memoryStorage() });
 
 // Ruta para registrar un usuario
 //router.post('/registrar', registrarUsuario);
