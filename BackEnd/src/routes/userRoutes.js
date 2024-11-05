@@ -1,4 +1,4 @@
-const express = require('../config/supabase');
+const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
 const upload = require('multer')({ storage: multer.memoryStorage() });
