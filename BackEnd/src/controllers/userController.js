@@ -10,6 +10,9 @@ exports.registrarUsuario = async (req, res) => {
     const { nombre, edad, password, nombre_usuario, movil } = req.body;
     const foto = req.file;
 
+    console.log(foto);
+    console.log(req.body.foto);
+    console.log(req.file);
 
     const camposFaltantes = [];
       if (!nombre) camposFaltantes.push('nombre');
