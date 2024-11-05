@@ -76,7 +76,7 @@ exports.registrarUsuario = async (req, res) => {
       const { data: publicUrlData, error: publicUrlError } = supabase
         .storage
         .from('user-post-images')
-        .getPublicUrl(fileName); // Obtener URL pública de la imagen
+        .getPublicUrl(fileName,foto.buffer); // Obtener URL pública de la imagen
 
       if (publicUrlError) {
         return res.status(500).json({ message: 'Error al obtener la URL de la imagen', error: publicUrlError });
