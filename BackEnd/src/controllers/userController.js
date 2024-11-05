@@ -10,17 +10,26 @@ exports.registrarUsuario = async (req, res) => {
     const { nombre, edad, password, nombre_usuario, movil } = req.body;
     const foto = req.file;
 
-    // Comprobar si faltan datos obligatorios
-    if (!nombre || !edad || !password || !nombre_usuario || !movil) {
-      return res.status(400).json({ message: 'Faltan datos obligatorios' });
-    }
 
-    // Verificar si el número de teléfono ya está registrado
+    const camposFaltantes = [];
+      if (!nombre) camposFaltantes.push('nombre');
+      if (!edad) camposFaltantes.push('edad');
+      if (!password) camposFaltantes.push('password');
+      if (!nombre_usuario) camposFaltantes.push('nombre_usuario');
+      if (!movil) camposFaltantes.push('movil');
+
+      // Si hay campos faltantes, devolver un error
+      if (camposFaltantes.length > 0) {
+        return res.status(400).json({
+          message: `Faltan datos obligatorios: ${camposFaltantes.join(', ')}`
+        });
+      }
+
     const { data: existingUserByPhone, error: phoneCheckError } = await supabase
       .from('usuarios')
       .select('*')
       .eq('movil', movil)
-      .single(); // Obtiene un solo resultado
+      .single();
 
     if (phoneCheckError && phoneCheckError.code !== 'PGRST116') { // PGRST116 indica que no se encontró ningún resultado
       return res.status(500).json({ message: 'Error al verificar el número de teléfono', error: phoneCheckError });
@@ -30,12 +39,11 @@ exports.registrarUsuario = async (req, res) => {
       return res.status(400).json({ message: 'El número de teléfono ya está registrado' });
     }
 
-    // Verificar si el nombre de usuario ya está registrado
     const { data: existingUserByUsername, error: usernameCheckError } = await supabase
       .from('usuarios')
       .select('*')
       .eq('nombre_usuario', nombre_usuario)
-      .single(); // Obtiene un solo resultado
+      .single();
 
     if (usernameCheckError && usernameCheckError.code !== 'PGRST116') { // PGRST116 indica que no se encontró ningún resultado
       return res.status(500).json({ message: 'Error al verificar el nombre de usuario', error: usernameCheckError });
@@ -55,7 +63,7 @@ exports.registrarUsuario = async (req, res) => {
       const { data: uploadData, error: uploadError } = await supabase
         .storage
         .from('user-post-images')
-        .upload(fileName, foto.buffer); // Subir imagen a Supabase
+        .upload(fileName, foto.buffer);
 
       if (uploadError) {
         console.error('Error al subir la imagen:', uploadError.message);
