@@ -129,3 +129,53 @@ exports.obtenerUsuarios = async (req, res) => {
   
     res.status(200).json(data);
   };
+  exports.registrarPreferencias = async(req, res) => {
+
+    const { userID, ...preferencias } = req.body;
+
+    if (!userID) {
+      return res.status(400).json({ error: "El userID es obligatorio." });
+    }
+
+    console.log(`Recibiendo preferencias de usuario: ${preferencias}`);
+
+    try{
+
+      const { data: insertData, error: insertError } = await supabase
+      .from('preferencias')
+      .insert({ userID })
+      .select('id');
+
+      if (insertError) {
+        console.error("Error al insertar la fila inicial:", insertError);
+        return res.status(400).json({ error: insertError.message });
+      }
+
+      const updates = {};
+    Object.entries(preferencias).forEach(([key, value]) => {
+      if (value === true) {
+        updates[key] = true;
+      }
+    });
+
+    if (Object.keys(updates).length > 0) {
+      // Actualizar solo las columnas necesarias
+      const { error: updateError } = await supabase
+        .from('preferencias')
+        .update(updates)
+        .eq('id', newId);
+
+      if (updateError) {
+        console.error("Error al actualizar las columnas seleccionadas:", updateError);
+        return res.status(400).json({ error: updateError.message });
+      }
+    }
+
+    res.status(200).json({ message: "Preferencias guardadas correctamente." });
+
+
+    } catch(error){
+      console.error("Error al guardar las preferencias:", error);
+      res.status(500).json({ error: "Error interno del servidor." });
+    }
+  }
