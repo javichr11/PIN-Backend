@@ -10,14 +10,13 @@ exports.registrarUsuario = async (req, res) => {
     const { nombre, edad, password, nombre_usuario, movil } = req.body;
     const foto = req.file;
 
-
     const camposFaltantes = [];
       if (!nombre) camposFaltantes.push('nombre');
       if (!edad) camposFaltantes.push('edad');
       if (!password) camposFaltantes.push('password');
       if (!nombre_usuario) camposFaltantes.push('nombre_usuario');
       if (!movil) camposFaltantes.push('movil');
-      if (!foto) camposFaltantes.push('foto');
+      //if (!foto) camposFaltantes.push('foto');
 
 
       // Si hay campos faltantes, devolver un error
@@ -73,7 +72,7 @@ exports.registrarUsuario = async (req, res) => {
       }
 
       // Obtener la URL pública de la imagen
-      const { data: publicUrlData, error: publicUrlError } = supabase
+      const { data: publicUrlData, error: publicUrlError } = await supabase
         .storage
         .from('user-post-images')
         .getPublicUrl(fileName); // Obtener URL pública de la imagen
