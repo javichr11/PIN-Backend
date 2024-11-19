@@ -149,9 +149,10 @@ exports.obtenerUsuarios = async (req, res) => {
         console.error("Error al insertar la fila inicial:", insertError);
         return res.status(400).json({ error: insertError.message });
       }
+      const newId = insertData[0].id;
 
       const updates = {};
-    Object.entries(preferencias).forEach(([key, value]) => {
+      Object.entries(preferencias).forEach(([key, value]) => {
       if (value === true) {
         updates[key] = true;
       }
