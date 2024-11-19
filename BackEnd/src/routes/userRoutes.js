@@ -12,6 +12,6 @@ router.post('/registrar', upload.single('foto'), userController.registrarUsuario
 router.get('/obtener', userController.obtenerUsuarios);
 
 // Ruta para almacenar las preferencias de ususario
-router.post('/preferencias', registrarPreferencias);
+router.post('/preferencias', userController.registrarPreferencias);
 
 module.exports = router;
