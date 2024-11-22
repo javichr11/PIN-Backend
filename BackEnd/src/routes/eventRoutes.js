@@ -14,5 +14,7 @@ router.get('/obtener',eventController.obtenerEventos);
 router.delete('/eliminar/:id', eventController.eliminarEvento);
 // Ruta para inscribirse a un evento
 router.post('/inscribir', eventController.inscribirAEvento);
+// Ruta para obtener eventos filtrados por preferencias de usuario
+router.get('/obtenerFiltrado/:userID', eventController.obtenerEventosFiltrados);
 
 module.exports = router;
