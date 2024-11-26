@@ -4,6 +4,7 @@ const usuarioRoutes = require('./routes/userRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const commentsRoutes = require('./routes/commentsRoutes');
 const ratingRoutes = require('./routes/ratingRoutes');
+const insigniasRoutes = require('./routes/insigniasRoutes');
 
 
 const app = express();
