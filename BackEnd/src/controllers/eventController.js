@@ -134,11 +134,8 @@ exports.inscribirAEvento = async (req, res) => {
 
     // Verificar que ambos valores están definidos
     if (!eventID || !userID) {
-        console.log('eventID o userID no proporcionados');
         return res.status(400).json({ message: 'Falta eventID o userID en la petición' });
     }
-
-    console.log('eventID:', eventID, 'userID:', userID);
 
     try {
         // Obtener el evento específico
@@ -149,12 +146,10 @@ exports.inscribirAEvento = async (req, res) => {
             .single();
 
         if (fetchError) {
-            console.log('Fetch error:', fetchError);
             return res.status(400).json({ error: fetchError.message });
         }
 
         if (!eventoData) {
-            console.log('Evento no encontrado');
             return res.status(404).json({ message: 'Evento no encontrado' });
         }
 
@@ -166,8 +161,7 @@ exports.inscribirAEvento = async (req, res) => {
             .eq('userID', userID)
             .single();
 
-        if (checkError && checkError.code !== 'PGRST116') { // Manejar error sólo si no es "no row returned"
-            console.log('Check error:', checkError);
+        if (checkError && checkError.code !== 'PGRST116') {
             return res.status(400).json({ error: checkError.message });
         }
 
@@ -182,7 +176,6 @@ exports.inscribirAEvento = async (req, res) => {
                 .insert({ eventID, userID });
 
             if (inscripcionError) {
-                console.log('Inscripción error:', inscripcionError);
                 return res.status(400).json({ message: 'Error al crear la inscripción al evento', error: inscripcionError });
             }
 
@@ -193,13 +186,11 @@ exports.inscribirAEvento = async (req, res) => {
                 .eq('id', eventID);
 
             if (updateError) {
-                console.log('Update error:', updateError);
                 return res.status(400).json({ error: updateError.message });
             }
 
             return res.status(200).json({ message: 'Inscripción exitosa' });
         } else {
-            console.log('Aforo completo');
             return res.status(400).json({ message: 'Aforo completo' });
         }
     } catch (error) {
@@ -207,6 +198,7 @@ exports.inscribirAEvento = async (req, res) => {
         return res.status(500).json({ message: 'Error de servidor', error: error.message });
     }
 };
+
 // Las funciones de abajo son para obtener eventos filtrados
 // Función para obtener las preferencias del usuario
 // No borrar esta funcion. La funcion export.obtenerEventos no sirve
