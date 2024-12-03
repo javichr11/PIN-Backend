@@ -16,8 +16,6 @@ exports.registrarUsuario = async (req, res) => {
       if (!password) camposFaltantes.push('password');
       if (!nombre_usuario) camposFaltantes.push('nombre_usuario');
       if (!movil) camposFaltantes.push('movil');
-      //if (!foto) camposFaltantes.push('foto');
-
 
       // Si hay campos faltantes, devolver un error
       if (camposFaltantes.length > 0) {

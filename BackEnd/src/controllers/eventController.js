@@ -11,13 +11,26 @@ const upload = multer({ storage: storage });
 
 exports.crearEventos = async (req, res) => {
     try {
-        const { usuario_id, nombre, descripcion, tematica, ubicacion, aforo, fecha, duracion } = req.body;
+        const { userID, nombre, descripcion, tematica, ubicacion, aforo, fecha, duracion } = req.body;
         const foto = req.file; // La imagen cargada
   
-        // Verificación de datos obligatorios
-        if (!usuario_id || !nombre || !fecha || !ubicacion || !aforo || !tematica) {
-            return res.status(400).json({ message: 'Faltan datos obligatorios' });
+        const camposFaltantes = [];
+
+        if(!userID)camposFaltantes.push('userID');
+        if(!nombre)camposFaltantes.push('nombre');
+        if(!descripcion)camposFaltantes.push('descripcion');
+        if(!tematica)camposFaltantes.push('tematica');
+        if(!ubicacion)camposFaltantes.push('ubicacion');
+        if(!aforo)camposFaltantes.push('aforo');
+        if(!fecha)camposFaltantes.push('fecha');
+        if(!duracion)camposFaltantes.push('duracion');
+
+        if (camposFaltantes.length > 0) {
+            return res.status(400).json({
+              message: `Faltan datos obligatorios: ${camposFaltantes.join(', ')}`
+            });
         }
+
   
         let fotoURL = null;
         if (foto) {
