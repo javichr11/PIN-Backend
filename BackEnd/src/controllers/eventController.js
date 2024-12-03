@@ -90,7 +90,8 @@ exports.crearEventos = async (req, res) => {
   
         return res.status(201).json({ message: 'Evento creado con éxito', data });
     } catch (error) {
-        return res.status(500).json({ message: 'Error del servidor(Evento)', error });
+        console.log(error.message);
+        return res.status(500).json({ message: 'Error del servidor(Evento)', error:error.message });
     }
 };
 
