@@ -73,7 +73,7 @@ exports.crearEventos = async (req, res) => {
             return res.status(500).json({ message: 'Error al crear el evento', error });
         }
 
-        await actualizarInsigniaCrear(usuario_id, tematica);
+        //await actualizarInsigniaCrear(usuario_id, tematica);
   
         return res.status(201).json({ message: 'Evento creado con éxito', data });
     } catch (error) {
