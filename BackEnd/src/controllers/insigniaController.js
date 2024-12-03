@@ -35,6 +35,7 @@ const iniciarInsignia = async (userID, insigniaID, desbloquear) =>{
     const { error: insertError } = await supabase
         .from('insignias_usuario')
         .insert([{ userID: userID, insigniaID: insigniaID, progreso_actual: 1, desbloqueada: desbloquear, fecha: new Date()}]);
+    if(insertError){return res.status(500).json({message:'Error al iniciar la insignia'})};
 }
 
 const actualizarProgreso = async (userID, insigniaID) =>{
@@ -79,7 +80,6 @@ const actualizarProgreso = async (userID, insigniaID) =>{
                 }                
             }
         }
-
     }catch(error){
         return res.status(500).json({ message: 'Error del servidor (insignia)', error: updateError});
     }
