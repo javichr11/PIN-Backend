@@ -12,19 +12,13 @@ const actualizarInsigniaCrear = async (userID, tematica) =>{
             .eq('userID', userID)
             .eq('insigniaID', 1)
             .single();
-       if (selectError) {
-           // Mostrar ERROR
-         }
 
-      if(insigniaUsuario){
+        if(insigniaUsuario){
             actualizarProgreso(userID, 1);
-      }else{
+        }else{
             iniciarInsignia(userID, 1, false);
-        if(insertError){
-            //Mostrar error
         }
         return res.status(200).json({ message: 'Insignia creada correctamente'});
-      }
     }catch(error){
         return res.status(500).json({ message: 'Error al actualizar la insignia al crear evento:', error });
     }
@@ -67,6 +61,10 @@ const actualizarProgreso = async (userID, insigniaID) =>{
                         .update({ progreso_actual: nuevoProgreso, desbloqueada: true})
                         .eq('usuario_id', userID)
                         .eq('insignia_id', insigniaID);
+                        
+                        if(updateError){
+                            return res.status(500).json({ message: 'Error al actualizar la insignia', error: updateError});
+                        }
                 }else{
                     const { error: updateError } = await supabase
                         .from('insignias_usuario')
