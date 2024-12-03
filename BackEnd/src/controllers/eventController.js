@@ -171,10 +171,10 @@ exports.inscribirAEvento = async (req, res) => {
 
         // Comprobar aforo y realizar inscripción
         if (eventoData.inscritos < eventoData.aforo) {
-            const fechaActual = new Date();
+            const fecha_inscripcion = new Date();
             const { data: inscripcionData, error: inscripcionError } = await supabase
                 .from('inscripciones')
-                .insert({ eventID, userID, fechaActual});
+                .insert({ eventID, userID, fecha_inscripcion});
 
             if (inscripcionError) {
                 return res.status(400).json({ message: 'Error al crear la inscripción al evento', error: inscripcionError });
