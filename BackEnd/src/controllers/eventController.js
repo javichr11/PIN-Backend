@@ -30,7 +30,6 @@ exports.crearEventos = async (req, res) => {
                 .upload(fileName, foto.buffer);  // Subir imagen a Supabase
   
             if (uploadError) {
-                console.error('Error al subir la imagen:', uploadError.message);
                 return res.status(500).json({ message: 'Error al subir la imagen', error: uploadError });
             }
   
