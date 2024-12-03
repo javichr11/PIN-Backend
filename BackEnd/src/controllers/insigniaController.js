@@ -82,6 +82,7 @@ const actualizarProgreso = async (userID, insigniaID) =>{
         }
     }catch(error){
         console.log("Error 6");
+        console.log(error.message);
     }
 }
 
