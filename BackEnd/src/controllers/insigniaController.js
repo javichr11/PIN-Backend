@@ -18,9 +18,9 @@ const actualizarInsigniaCrear = async (userID, tematica) =>{
         }else{
             iniciarInsignia(userID, 1, false);
         }
-        return res.status(200).json({ message: 'Insignia creada correctamente'});
+        console.log("Insignia completada");
     }catch(error){
-        return res.status(500).json({ message: 'Error al actualizar la insignia al crear evento:', error });
+        console.log("Error 1");
     }
 
 }
@@ -31,7 +31,7 @@ const iniciarInsignia = async (userID, insigniaID, desbloquear) =>{
         .insert([{ userID: userID, insigniaID: insigniaID, progreso_actual: 1, desbloqueada: desbloquear, fecha: new Date()}]);
     
         
-    if(insertError){return res.status(500).json({message:'Error al iniciar la insignia'})};
+    if(insertError){ console.log("Error 2");};
 }
 
 const actualizarProgreso = async (userID, insigniaID) =>{
@@ -44,7 +44,7 @@ const actualizarProgreso = async (userID, insigniaID) =>{
         .single();
         
         if (selectError) {
-            return res.status(500).json({ message: 'Error al recoger la insignia', error });
+            console.log("Error 3");
         }
 
         if(insigniaUsuario){
@@ -65,7 +65,7 @@ const actualizarProgreso = async (userID, insigniaID) =>{
                         .eq('insignia_id', insigniaID);
 
                         if(updateError){
-                            return res.status(500).json({ message: 'Error al actualizar la insignia', error: updateError});
+                            console.log("Error 4");
                         }
                 }else{
                     const { error: updateError } = await supabase
@@ -75,13 +75,13 @@ const actualizarProgreso = async (userID, insigniaID) =>{
                         .eq('insignia_id', insigniaID);
 
                         if(updateError){
-                            return res.status(500).json({ message: 'Error al actualizar la insignia', error: updateError});
+                            console.log("Error 5");
                         }
                 }                
             }
         }
     }catch(error){
-        return res.status(500).json({ message: updateError});
+        console.log("Error 6");
     }
 }
 
