@@ -51,8 +51,8 @@ const actualizarProgreso = async (userID, insigniaID) =>{
             if (!insigniaUsuario.desbloqueada) {
 
                 const {data: insignia, error: insigniaError} = await supabase
-                    .select('*')
                     .from('insignias')
+                    .select('*')
                     .eq('id', insigniaID);
                 
                 const nuevoProgreso = insigniaUsuario.progreso_actual + 1;
