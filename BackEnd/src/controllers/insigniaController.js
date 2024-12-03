@@ -89,5 +89,4 @@ const actualizarInsigniaAsistir = async (userID, tematica) =>{
 
 }
 
-module.exports = { actualizarInsigniaCrear };
-module.exports = { actualizarInsigniaAsistir };
+module.exports = { actualizarInsigniaCrear, iniciarInsignia, actualizarProgreso };

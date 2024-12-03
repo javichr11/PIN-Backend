@@ -1,6 +1,5 @@
 const supabase = require('../config/supabase');
-const { actualizarInsigniaCrear } = require('./insigniaController');
-const { actualizarInsigniaAsistir } = require('./insigniaController');
+const { actualizarInsigniaCrear } = require('../controllers/insigniaController');
 const { v4: uuidv4 } = require('uuid');
 const multer = require('multer');
 
