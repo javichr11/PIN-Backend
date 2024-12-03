@@ -1,3 +1,7 @@
 const supabase = require('../config/supabase');
 
-exports.desbloquearInsignia
+const actualizarInsignia = async () =>{
+
+}
+
+module.exports = { actualizarInsignia };

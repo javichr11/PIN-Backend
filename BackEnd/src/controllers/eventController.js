@@ -1,4 +1,5 @@
 const supabase = require('../config/supabase');
+const { actualizarInsignia } = require('./insigniaController');
 const { v4: uuidv4 } = require('uuid');
 const multer = require('multer');
 
@@ -170,23 +171,28 @@ exports.inscribirAEvento = async (req, res) => {
 
         // Comprobar aforo y realizar inscripción
         if (eventoData.inscritos < eventoData.aforo) {
+            const fechaActual = new Date();
             const { data: inscripcionData, error: inscripcionError } = await supabase
                 .from('inscripciones')
-                .insert({ eventID, userID });
+                .insert({ eventID, userID, fechaActual});
 
             if (inscripcionError) {
                 return res.status(400).json({ message: 'Error al crear la inscripción al evento', error: inscripcionError });
             }
 
-            // Actualizar el número de inscritos
-            const { data: updateData, error: updateError } = await supabase
-                .from('eventos')
-                .update({ inscritos: eventoData.inscritos + 1 })
-                .eq('id', eventID);
+         // Actualizar el número de inscritos
+        const { data: updateData, error: updateError } = await supabase
+            .from('eventos')
+            .update({ inscritos: eventoData.inscritos + 1 })
+            .eq('id', eventID);
 
             if (updateError) {
                 return res.status(400).json({ error: updateError.message });
             }
+
+            try{
+
+            }catch(badgeError){}
 
             return res.status(200).json({ message: 'Inscripción exitosa' });
         } else {
