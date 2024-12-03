@@ -70,7 +70,7 @@ exports.crearEventos = async (req, res) => {
             .from('eventos')
             .insert([
                 {
-                    usuario_id,
+                    userID,
                     nombre,
                     descripcion,
                     tematica,
