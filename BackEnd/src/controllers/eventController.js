@@ -1,5 +1,6 @@
 const supabase = require('../config/supabase');
-const { actualizarInsignia } = require('./insigniaController');
+const { actualizarInsigniaCrear } = require('./insigniaController');
+const { actualizarInsigniaAsistir } = require('./insigniaController');
 const { v4: uuidv4 } = require('uuid');
 const multer = require('multer');
 
@@ -71,6 +72,8 @@ exports.crearEventos = async (req, res) => {
         if (error) {
             return res.status(500).json({ message: 'Error al crear el evento', error });
         }
+
+        await actualizarInsigniaCrear(usuario_id, tematica);
   
         return res.status(201).json({ message: 'Evento creado con éxito', data });
     } catch (error) {
