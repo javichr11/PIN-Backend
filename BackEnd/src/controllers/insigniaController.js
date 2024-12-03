@@ -81,7 +81,7 @@ const actualizarProgreso = async (userID, insigniaID) =>{
             }
         }
     }catch(error){
-        return res.status(500).json({ message: 'Error del servidor (insignia)', error: updateError});
+        return res.status(500).json({ message: updateError});
     }
 }
 
