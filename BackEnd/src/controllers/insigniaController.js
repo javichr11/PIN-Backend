@@ -68,6 +68,7 @@ const actualizarProgreso = async (userID, insigniaID) =>{
 
                         if(updateError){
                             console.log("Error 4");
+                            console.log(updateError);
                         }
                 }else{
                     const { error: updateError } = await supabase
@@ -80,6 +81,7 @@ const actualizarProgreso = async (userID, insigniaID) =>{
 
                         if(updateError){
                             console.log("Error 5");
+                            console.log(updateError);
                         }
                 }                
             }
