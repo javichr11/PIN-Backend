@@ -61,8 +61,8 @@ const actualizarProgreso = async (userID, insigniaID) =>{
                     const { error: updateError } = await supabase
                         .from('insignias_usuario')
                         .update({ progreso_actual: nuevoProgreso, desbloqueada: true})
-                        .eq('usuario_id', userID)
-                        .eq('insignia_id', insigniaID);
+                        .eq('userID', userID)
+                        .eq('insigniaID', insigniaID);
 
                         console.log("La isnignia se ha completado con éxito");
 
@@ -74,8 +74,8 @@ const actualizarProgreso = async (userID, insigniaID) =>{
                     const { error: updateError } = await supabase
                         .from('insignias_usuario')
                         .update({ progreso_actual: nuevoProgreso })
-                        .eq('usuario_id', userID)
-                        .eq('insignia_id', insigniaID);
+                        .eq('userID', userID)
+                        .eq('insigniaID', insigniaID);
 
                         console.log("La isnignia se ha actualizado correctamente");
 
