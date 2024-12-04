@@ -10,13 +10,13 @@ const actualizarInsigniaCrear = async (userID, tematica) =>{
             .from('insignias_usuario')
             .select('*')
             .eq('userID', userID)
-            .eq('insigniaID', 1)
+            .eq('insigniaID', 2)
             .single();
 
         if(insigniaUsuario){
-            actualizarProgreso(userID, 1);
+            actualizarProgreso(userID, 2);
         }else{
-            iniciarInsignia(userID, 1, false);
+            iniciarInsignia(userID, 2, false);
         }
         console.log("La insignia se ha creado correctamente");
     }catch(error){
