@@ -57,6 +57,10 @@ const actualizarProgreso = async (userID, insigniaID) =>{
                 
                 const nuevoProgreso = insigniaUsuario.progreso_actual + 1;
 
+                console.log("Nuevo Progreso: " + nuevoProgreso);
+                console.log("Criterio Min: " + insignia.criterioMin);
+                
+
                 if(nuevoProgreso == insignia.criterioMin){
                     const { error: updateError } = await supabase
                         .from('insignias_usuario')
