@@ -18,7 +18,7 @@ const actualizarInsigniaCrear = async (userID, tematica) =>{
         }else{
             iniciarInsignia(userID, 1, false);
         }
-        console.log("Insignia completada");
+        console.log("La insignia se ha creado correctamente");
     }catch(error){
         console.log("Error 1");
     }
@@ -30,7 +30,7 @@ const iniciarInsignia = async (userID, insigniaID, desbloquear) =>{
         .from('insignias_usuario')
         .insert([{ userID: userID, insigniaID: insigniaID, progreso_actual: 1, desbloqueada: desbloquear, fecha: new Date()}]);
     
-        
+    console.log("Se ha iniciado la insignia correctamente");
     if(insertError){ console.log("Error 2");};
 }
 
@@ -64,6 +64,8 @@ const actualizarProgreso = async (userID, insigniaID) =>{
                         .eq('usuario_id', userID)
                         .eq('insignia_id', insigniaID);
 
+                        console.log("La isnignia se ha completado con éxito");
+
                         if(updateError){
                             console.log("Error 4");
                         }
@@ -73,6 +75,8 @@ const actualizarProgreso = async (userID, insigniaID) =>{
                         .update({ progreso_actual: nuevoProgreso })
                         .eq('usuario_id', userID)
                         .eq('insignia_id', insigniaID);
+
+                        console.log("La isnignia se ha actualizado correctamente");
 
                         if(updateError){
                             console.log("Error 5");
