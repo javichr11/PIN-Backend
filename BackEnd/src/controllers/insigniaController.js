@@ -53,12 +53,18 @@ const actualizarProgreso = async (userID, insigniaID) =>{
                 const {data: insignia, error: insigniaError} = await supabase
                     .from('insignias')
                     .select('*')
-                    .eq('id', insigniaID);
+                    .eq('id', insigniaID)
+                    .single();
+
+
+                if(insigniaError){
+                    console.log("El error al buscar la insignia es: " + insigniaError);
+                }
                 
                 const nuevoProgreso = insigniaUsuario.progreso_actual + 1;
 
                 console.log("Nuevo Progreso: " + nuevoProgreso);
-                console.log("Criterio Min: " + insignia.criterioMin);
+                console.log("Criterio Min: " + insignia.criterioMin);//Pone UNDEFINED MIRAR
                 
 
                 if(nuevoProgreso == insignia.criterioMin){
@@ -94,7 +100,7 @@ const actualizarProgreso = async (userID, insigniaID) =>{
         console.log("Error 6");
         console.log(error.message);
     }
-}
+};
 
 const actualizarInsigniaAsistir = async (userID, tematica) =>{
 
