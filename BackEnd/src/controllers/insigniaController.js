@@ -19,8 +19,9 @@ const actualizarInsigniaCrear = async (userID, tematica) =>{
             iniciarInsignia(userID, 2, false);
         }
         console.log("La insignia se ha creado correctamente");
+        console.log(tematica);
 
-        switch(tematica){
+        /*switch(tematica){
             case "deporte": 
                 const { data: insigniaUsuarioD, error: selectErrorD} = await supabase
                 .from('insignias_usuario')
@@ -76,7 +77,7 @@ const actualizarInsigniaCrear = async (userID, tematica) =>{
             default: 
                 console.log("Aquí no se a entrado en ningún caso");
             break;
-        }
+        }*/
 
 
     }catch(error){
