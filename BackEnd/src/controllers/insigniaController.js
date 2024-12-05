@@ -78,6 +78,7 @@ const actualizarInsigniaCrear = async (userID, tematica) =>{
 
     }catch(error){
         console.log("Error 1");
+        console.log(error.message);
     }
 
 }
