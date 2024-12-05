@@ -36,6 +36,7 @@ const actualizarInsigniaCrear = async (userID, tematica) =>{
                     }
                 if(selectErrorD){
                     console.log("Error al crear la insignia de Deporte");
+                    console.log(selectErrorD.message);
                 }
 
             break;
@@ -54,6 +55,7 @@ const actualizarInsigniaCrear = async (userID, tematica) =>{
 
                     if(selectErrorA){
                         console.log("Error al crear la insignia de Arte");
+                        console.log(selectErrorA.message);
                     }
             break;
             case "eco":
@@ -72,6 +74,7 @@ const actualizarInsigniaCrear = async (userID, tematica) =>{
                     
                     if(selectErrorE){
                         console.log("Error al crear la insignia Eco");
+                        console.log(selectErrorE.message);
                     }
             break;
             default: 
