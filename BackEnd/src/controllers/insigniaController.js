@@ -73,6 +73,9 @@ const actualizarInsigniaCrear = async (userID, tematica) =>{
                         console.log("Error al crear la insignia Eco");
                     }
             break;
+            default: 
+                console.log("Aquí no se a entrado en ningún caso");
+            break;
         }
 
 
