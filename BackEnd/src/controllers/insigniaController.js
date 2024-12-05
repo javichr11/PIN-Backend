@@ -34,10 +34,6 @@ const actualizarInsigniaCrear = async (userID, tematica) =>{
                         iniciarInsignia(userID, Deporte, true);
                         console.log("Se ha creado la insigna con ID: " + Deporte);
                     }
-                if(selectErrorD){
-                    console.log("Error al crear la insignia de Deporte");
-                    console.log(selectErrorD.message);
-                }
 
             break;
             case "arte": 
@@ -53,10 +49,6 @@ const actualizarInsigniaCrear = async (userID, tematica) =>{
                         console.log("Se ha creado la insigna con ID: " + Arte);
                     }
 
-                    if(selectErrorA){
-                        console.log("Error al crear la insignia de Arte");
-                        console.log(selectErrorA.message);
-                    }
             break;
             case "eco":
 
@@ -72,10 +64,6 @@ const actualizarInsigniaCrear = async (userID, tematica) =>{
                         console.log("Se ha creado la insigna con ID: " + Eco);
                     }
                     
-                    if(selectErrorE){
-                        console.log("Error al crear la insignia Eco");
-                        console.log(selectErrorE.message);
-                    }
             break;
             default: 
                 console.log("Aquí no se a entrado en ningún caso");
