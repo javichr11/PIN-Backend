@@ -19,6 +19,63 @@ const actualizarInsigniaCrear = async (userID, tematica) =>{
             iniciarInsignia(userID, 2, false);
         }
         console.log("La insignia se ha creado correctamente");
+
+        switch(tematica){
+            case deporte: 
+                const { data: insigniaUsuarioD, error: selectErrorD} = await supabase
+                .from('insignias_usuario')
+                .select('*')
+                .eq('userID', userID)
+                .eq('insigniaID', Deporte)
+                .single();
+
+                    if(!insigniaUsuarioD){
+                        iniciarInsignia(userID, Deporte, true);
+                        console.log("Se ha creado la insigna con ID: " + Deporte);
+                    }
+                if(selectErrorD){
+                    console.log("Error al crear la insignia de Deporte");
+                }
+
+            break;
+            case arte: 
+                const { data: insigniaUsuarioA, error: selectErrorA } = await supabase
+                    .from('insignias_usuario')
+                    .select('*')
+                    .eq('userID', userID)
+                    .eq('insigniaID', Arte)
+                    .single();
+
+                    if(!insigniaUsuarioA){
+                        iniciarInsignia(userID, Arte, true);
+                        console.log("Se ha creado la insigna con ID: " + Arte);
+                    }
+
+                    if(selectErrorA){
+                        console.log("Error al crear la insignia de Arte");
+                    }
+            break;
+            case eco:
+
+                const { data: insigniaUsuarioE, error: selectErrorE } = await supabase
+                    .from('insignias_usuario')
+                    .select('*')
+                    .eq('userID', userID)
+                    .eq('insigniaID', Eco)
+                    .single();
+
+                    if(!insigniaUsuarioE){
+                        iniciarInsignia(userID, Eco, true);
+                        console.log("Se ha creado la insigna con ID: " + Eco);
+                    }
+                    
+                    if(selectErrorE){
+                        console.log("Error al crear la insignia Eco");
+                    }
+            break;
+        }
+
+
     }catch(error){
         console.log("Error 1");
     }
