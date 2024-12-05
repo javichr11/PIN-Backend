@@ -21,7 +21,7 @@ const actualizarInsigniaCrear = async (userID, tematica) =>{
         console.log("La insignia se ha creado correctamente");
 
         switch(tematica){
-            case deporte: 
+            case tematica == "deporte": 
                 const { data: insigniaUsuarioD, error: selectErrorD} = await supabase
                 .from('insignias_usuario')
                 .select('*')
@@ -38,7 +38,7 @@ const actualizarInsigniaCrear = async (userID, tematica) =>{
                 }
 
             break;
-            case arte: 
+            case tematica == "arte": 
                 const { data: insigniaUsuarioA, error: selectErrorA } = await supabase
                     .from('insignias_usuario')
                     .select('*')
@@ -55,7 +55,7 @@ const actualizarInsigniaCrear = async (userID, tematica) =>{
                         console.log("Error al crear la insignia de Arte");
                     }
             break;
-            case eco:
+            case tematica == "eco":
 
                 const { data: insigniaUsuarioE, error: selectErrorE } = await supabase
                     .from('insignias_usuario')
