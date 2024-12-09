@@ -161,7 +161,7 @@ const actualizarInsigniaAsistir = async (userID, tematica) =>{
 
 
 const obtenerLogradas = async (req,res) =>{
-    const {userID} = req.body;
+    const {userID} = req.params;
 
 
     try {

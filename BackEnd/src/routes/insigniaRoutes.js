@@ -4,7 +4,7 @@ const insigniaController = require('../controllers/insigniaController');
 const multer = require('multer');
 
 
-router.get('/insigniasLogradas', insigniaController.obtenerLogradas);
+router.get('/insigniasLogradas/:userID', insigniaController.obtenerLogradas);
 
 
 module.exports = router;
