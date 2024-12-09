@@ -183,4 +183,4 @@ const obtenerLogradas = async (req,res) =>{
 
 
 
-module.exports = { actualizarInsigniaCrear, iniciarInsignia, actualizarProgreso};
+module.exports = { actualizarInsigniaCrear, iniciarInsignia, actualizarProgreso, obtenerLogradas};
