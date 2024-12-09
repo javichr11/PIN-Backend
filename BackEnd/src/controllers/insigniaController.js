@@ -159,4 +159,28 @@ const actualizarInsigniaAsistir = async (userID, tematica) =>{
 
 }
 
-module.exports = { actualizarInsigniaCrear, iniciarInsignia, actualizarProgreso };
+
+const obtenerLogradas = async (req,res) =>{
+    const {userID} = req.body;
+
+
+    try {
+        const { data, error } = await supabase
+          .from('insignias_usuario')
+          .select('*')
+          .eq('userID', userID)
+          .eq('desbloqueada', true);
+    
+        if (error) {
+          return res.status(500).json({ message: 'Error al obtener las insignias', error });
+        }
+        return res.status(200).json({message: 'Las insignias se deberían de recoger bien', data});
+      }catch(error){
+          return res.status(500).json({ message: 'Error del servidor(Insignia)', error });
+      };
+
+};
+
+
+
+module.exports = { actualizarInsigniaCrear, iniciarInsignia, actualizarProgreso};
