@@ -173,7 +173,7 @@ const obtenerLogradas = async (req,res) =>{
         
     
         if (error) {
-          return res.status(500).json({ message: 'Error al obtener las insignias', error });
+          return res.status(500).json({ message: 'Error al obtener las insignias', message});
         }
         return res.status(200).json({message: 'Las insignias se deberían de recoger bien', data});
       }catch(error){
