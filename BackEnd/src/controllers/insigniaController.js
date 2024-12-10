@@ -169,7 +169,7 @@ const obtenerLogradas = async (req,res) =>{
         .from('insignias')
         .select('*')
         .innerJoin('insignias_usuario', 'insignias.id = insignias_usuario.insigniaID')
-        .eq('insignias_usuario.userID', userId)
+        .eq('insignias_usuario.userID', userID)
         
     
         if (error) {
