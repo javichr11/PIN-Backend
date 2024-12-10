@@ -166,14 +166,15 @@ const obtenerLogradas = async (req,res) =>{
 
     try {
         const { data, error } = await supabase
-        .from('insignias')
-        .select('*')
-        .innerJoin('insignias_usuario', 'insignias.id = insignias_usuario.insigniaID')
-        .eq('insignias_usuario.userID', userID);
+            .from('insignias_usuario')
+            .select(`
+                insignias(*)
+            `)
+            .eq('userID', userID);
         
     
         if (error) {
-          return res.status(500).json({ message: 'Error al obtener las insignias', message});
+          return res.status(500).json({ message: 'Error al obtener las insignias', error});
         }
         return res.status(200).json({message: 'Las insignias se deberían de recoger bien', data});
       }catch(error){
