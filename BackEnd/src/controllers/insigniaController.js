@@ -172,11 +172,11 @@ const obtenerLogradas = async (req,res) =>{
             `)
             .eq('userID', userID);
         
-    
+        const insignias = data.map(record => record.insignias);
         if (error) {
           return res.status(500).json({ message: 'Error al obtener las insignias', error});
         }
-        return res.status(200).json({message: 'Las insignias se deberían de recoger bien', data});
+        return res.status(200).json({message: 'Las insignias se deberían de recoger bien', insignias});
       }catch(error){
           return res.status(500).json({ message: 'Error del servidor(Insignia)', error});
       };
