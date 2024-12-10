@@ -40,8 +40,9 @@ exports.createComment = async (req, res) => {
     try {
       const { data, error } = await supabase
         .from('comentarios')
-        .select('id, usuario_id, content, created_at')
-        .eq('evento_id', evento_id);
+        .select('comentarios.id, comentarios.content, comentarios.created_at, usuarios.nombre AS usuario_nombre')
+        .eq('comentarios.evento_id', evento_id)
+        .join('usuarios', 'comentarios.usuario_id', 'usuarios.id');
   
       if (error) {
         return res.status(500).json({ error: 'Error al obtener comentarios' });

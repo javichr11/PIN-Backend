@@ -96,7 +96,8 @@ exports.registrarUsuario = async (req, res) => {
       return res.status(500).json({ message: 'Error al crear el usuario', error });
     }
 
-    return res.status(201).json({ message: 'Usuario registrado con éxito', data });
+    return res.status(201).json({ message: 'Usuario registrado con éxito',usuario_id: data[0].id, data });
+    
   } catch (error) {
     return res.status(500).json({ message: 'Error del servidor', error });
   }

@@ -15,9 +15,25 @@ exports.createRating = async (req, res) => {
 
 
   try {
-      const { data, error } = await supabase
-          .from('valoraciones')
-          .insert([{ evento_id, usuario_id, rating }]);
+    const { data: existingRating, error: ratingError } = await supabase
+    .from('valoraciones')
+    .select('id')
+    .eq('evento_id', evento_id)
+    .eq('usuario_id', usuario_id)
+    .single();
+
+    if (ratingError) {
+      console.error("Error al verificar valoración existente:", ratingError);
+      return res.status(500).json({ error: 'Error al verificar valoración existente' });
+    }
+
+    if (existingRating) {
+      return res.status(400).json({ error: 'Ya has valorado este evento' });
+    }
+
+    const { data, error } = await supabase
+    .from('valoraciones')
+    .insert([{ evento_id, usuario_id, rating }]);
 
       if (error) {
           console.error("Error al crear valoracion en Supabase:", error);
@@ -126,3 +142,27 @@ exports.createRating = async (req, res) => {
       res.status(500).json({ error: 'Error interno del servidor' });
     }
   };
+  //obtener media
+  exports.getAverageRatingByEvent = async (req, res) => {
+    const { evento_id } = req.params;
+
+    try {
+        const { data, error } = await supabase
+            .from('valoraciones')
+            .select('rating')
+            .eq('evento_id', evento_id);
+
+        if (error) {
+            return res.status(500).json({ error: 'Error al obtener valoraciones' });
+        }
+        if (data.length === 0) {
+          return res.status(200).json({ averageRating: 0 }); // Si no hay valoraciones, la media es 0
+      }
+
+        // Calcular la media
+        const averageRating = data.reduce((acc, val) => acc + val.rating, 0) / data.length;
+        res.status(200).json({ averageRating });
+    } catch (err) {
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+};

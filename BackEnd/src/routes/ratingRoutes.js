@@ -17,5 +17,8 @@ router.put('/editar/:rating_id', updateRating);
 
 // Ruta para eliminar un comentario (necesita el comentario_id como parámetro)
 router.delete('/eliminar/:rating_id', deleteRating);
+// Ruta para obtener la media de valoraciones de un evento
+router.get('/media/:evento_id', getAverageRatingByEvent);
+
 
 module.exports = router;

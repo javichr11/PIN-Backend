@@ -12,6 +12,7 @@
   "description": "",
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",
+    "axios": "^1.7.9",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "expo": "^49.0.0",
