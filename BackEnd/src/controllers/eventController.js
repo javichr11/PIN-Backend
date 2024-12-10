@@ -223,11 +223,11 @@ exports.inscribirAEvento = async (req, res) => {
 // Las funciones de abajo son para obtener eventos filtrados
 // Función para obtener las preferencias del usuario
 // No borrar esta funcion. La funcion export.obtenerEventos no sirve
-async function obtenerPreferencias(usuario_id) {
+async function obtenerPreferencias(userID) {
     const { data, error } = await supabase
         .from('preferencias')
         .select('*')
-        .eq('userID', usuario_id)
+        .eq('userID', userID)
         .single();
 
     if (error) {
@@ -257,7 +257,9 @@ async function obtenerEventos() {
 // Si el evento cumple con alguna preferencia, se anyade a filtrados
 function filtrarEventos(eventos, preferencias) {
     return eventos.filter(evento => {
+        
         const tematicaMatch = preferencias[evento.tematica] || false;
+        console.log(preferencias[evento.tematica]);
         const ubicacionMatch = preferencias[evento.ubicacion] || false;
 
         // Extraer la hora del evento y compararla con las preferencias del usuario
