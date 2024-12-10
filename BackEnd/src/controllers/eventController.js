@@ -259,6 +259,7 @@ function filtrarEventos(eventos, preferencias) {
     return eventos.filter(evento => {
         
         const tematicaMatch = preferencias[evento.tematica] || false;
+        console.log("LLEGA AQUÍ");
         console.log(preferencias[evento.tematica]);
         const ubicacionMatch = preferencias[evento.ubicacion] || false;
 
