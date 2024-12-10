@@ -170,7 +170,8 @@ const obtenerLogradas = async (req,res) =>{
             .select(`
                 insignias(*)
             `)
-            .eq('userID', userID);
+            .eq('userID', userID)
+            .eq('desbloqueada', true);
         
         const insignias = data.map(record => record.insignias);
         if (error) {
