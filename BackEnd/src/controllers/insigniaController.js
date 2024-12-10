@@ -177,7 +177,7 @@ const obtenerLogradas = async (req,res) =>{
         }
         return res.status(200).json({message: 'Las insignias se deberían de recoger bien', data});
       }catch(error){
-          return res.status(500).json({ message: 'Error del servidor(Insignia)', error });
+          return res.status(500).json({ message: 'Error del servidor(Insignia)', error});
       };
 
 };
