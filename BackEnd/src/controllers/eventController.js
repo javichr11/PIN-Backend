@@ -97,6 +97,7 @@ exports.crearEventos = async (req, res) => {
 
 exports.obtenerEventos = async (req, res) => {
     try {
+    console.log("LLEGA AQUÍ");
       const { data, error } = await supabase
         .from('eventos')
         .select('*');
