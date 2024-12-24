@@ -25,6 +25,57 @@ app.use('/comentario', commentsRoutes);
 app.use('/valoracion', ratingRoutes);
 app.use('/insignia', insigniaRoutes);
 
+app.post('/test-notifications', async (req, res) => {
+  await checkUpcomingEvents();
+  res.json({ success: true });
+});
+
+
+cron.schedule('* * * * *', checkUpcomingEvents);
+
+
+export async function checkUpcomingEvents() {
+  const oneHourFromNow = new Date(Date.now() + 60 * 60 * 1000)
+  
+  const { data: inscripciones, error } = await supabase
+    .from('inscripciones')
+    .select(`
+      id,
+      user_id,
+      eventos (
+        id,
+        nombre,
+        fecha_inicio
+      )
+    `)
+    .eq('notificacion_enviada', false)
+    .gte('eventos.fecha_inicio', new Date().toISOString())
+    .lte('eventos.fecha_inicio', oneHourFromNow.toISOString())
+
+  if (error) {
+    console.error('Error checking events:', error)
+    return
+  }
+
+  for (const inscripcion of inscripciones) {
+    try {
+      await supabase
+        .from('notificaciones')
+        .insert({
+          user_id: inscripcion.user_id,
+          mensaje: `El evento ${inscripcion.eventos.nombre} comenzará en menos de una hora`,
+          tipo: 'evento_proximo'
+        })
+
+      await supabase
+        .from('inscripciones')
+        .update({ notificacion_enviada: true })
+        .eq('id', inscripcion.id)
+    } catch (error) {
+      console.error(`Error processing inscription ${inscripcion.id}:`, error)
+    }
+  }
+}
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Servidor escuchando en http://0.0.0.0:${PORT}`);
