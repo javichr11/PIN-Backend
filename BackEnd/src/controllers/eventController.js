@@ -10,7 +10,7 @@ const upload = multer({ storage: storage });
 
 exports.crearEventos = async (req, res) => {
     try {
-        const { userID, nombre, descripcion, tematica, ubicacion, aforo, fecha, duracion } = req.body;
+        const { userID, nombre, descripcion, tematica, ubicacion, aforo, fecha, duracion, latitud, longitud } = req.body;
         const foto = req.file; // La imagen cargada
   
         const camposFaltantes = [];
@@ -23,6 +23,8 @@ exports.crearEventos = async (req, res) => {
         if(!aforo)camposFaltantes.push('aforo');
         if(!fecha)camposFaltantes.push('fecha');
         if(!duracion)camposFaltantes.push('duracion');
+        if(!latitud)camposFaltantes.push('latitud');
+        if(!longitud)camposFaltantes.push('longitud');
 
         if (camposFaltantes.length > 0) {
             return res.status(400).json({
