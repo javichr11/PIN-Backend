@@ -77,7 +77,9 @@ exports.crearEventos = async (req, res) => {
                     aforo,
                     fecha,
                     duracion,
-                    foto: fotoURL
+                    foto: fotoURL,
+                    latitud,
+                    longitud
                 }
             ]);
   
