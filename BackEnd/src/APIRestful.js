@@ -35,7 +35,9 @@ cron.schedule('* * * * *', checkUpcomingEvents);
 
 
 async function checkUpcomingEvents() {
-  const oneHourFromNow = new Date(Date.now() + 60 * 60 * 1000)
+  const now = new Date();
+  const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000);
+  console.log(oneHourLater);
   
   const { data: inscripciones, error } = await supabase
     .from('inscripciones')
@@ -45,7 +47,7 @@ async function checkUpcomingEvents() {
       eventID
     `)
     .eq('notificacion_enviada', false)
-    .eq('userID', 33)
+    .eq('userID', 33)//hacerlo genérico con USERID
 
     console.log(inscripciones);
  
@@ -70,7 +72,7 @@ async function checkUpcomingEvents() {
 
       // Verificar si el evento está dentro del rango de tiempo
       const fechaEvento = new Date(evento.fecha)
-      if (fechaEvento > new Date() && fechaEvento <= oneHourFromNow) {
+      if (fechaEvento > new Date() && fechaEvento <= oneHourLater) {
         await supabase
           .from('notificaciones')
           .insert({
