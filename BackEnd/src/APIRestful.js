@@ -41,6 +41,7 @@ async function enviarNotificacion(token, message) {
     });
 
     const data = await response.json();
+    console.log("Info: ", data);
     if (data.status !== 'ok') {
       console.error('Error al enviar notificación:', data);
     }
@@ -53,8 +54,7 @@ async function enviarNotificacion(token, message) {
 //PROGRAMACIÓN DE LAS NOTIFICACIONES
 
 cron.schedule('* * * * *', async () => {
-  console.log('Ejecutando tarea programada para enviar notificaciones...');
-
+  console.log("Funciona petición cron");
       try {
           // Lógica para buscar eventos próximos y enviar notificaciones
           const { data: eventos, error } = await supabase
@@ -72,6 +72,7 @@ cron.schedule('* * * * *', async () => {
 
     if (eventos.length > 0) {
         for (const evento of eventos) {
+          console.log(`Procesando evento: ${evento.nombre}`);
             // Iterar sobre las inscripciones del evento
             for (const inscripcion of evento.inscripciones) {
                 const { data: usuario, error: errorUsuario } = await supabase
@@ -85,8 +86,11 @@ cron.schedule('* * * * *', async () => {
                     continue;
                 }
 
+                console.log(`Token obtenido para el usuario ${inscripcion.userID}: ${usuario.token}`);
+
                 if (usuario.token) {
-                    // Enviar notificación al usuario
+
+                  console.log(`Enviando notificación al usuario con ID ${inscripcion.userID}`);
                     await enviarNotificacion(usuario.token, {
                         title: '¡Tu evento está por comenzar!',
                         body: `El evento "${evento.nombre}" comienza en menos de una hora.`,
