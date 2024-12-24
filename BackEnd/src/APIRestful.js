@@ -34,7 +34,7 @@ app.post('/test-notifications', async (req, res) => {
 cron.schedule('* * * * *', checkUpcomingEvents);
 
 
-export async function checkUpcomingEvents() {
+async function checkUpcomingEvents() {
   const oneHourFromNow = new Date(Date.now() + 60 * 60 * 1000)
   
   const { data: inscripciones, error } = await supabase
