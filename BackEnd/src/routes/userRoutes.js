@@ -14,9 +14,6 @@ router.get('/obtener', userController.obtenerUsuarios);
 // Ruta para almacenar las preferencias de ususario
 router.post('/preferencias', userController.registrarPreferencias);
 
-//Ruta para almacenar o actualizar el token *********USAR AL HACER EL INICIO DE SESIÓN********
-router.post('/token', userController.useToken);
-
 
 
 module.exports = router;

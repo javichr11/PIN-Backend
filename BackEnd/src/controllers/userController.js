@@ -177,28 +177,3 @@ exports.obtenerUsuarios = async (req, res) => {
       res.status(500).json({ error: "Error interno del servidor." });
     }
   }
-
-  exports.useToken = async(req, res) => {
-    const { userID, token } = req.body;
-
-        if (!userID || !token) {
-          return res.status(400).json({ error: 'userId y token son requeridos.' });
-        }
-
-        try {
-          const { data, error } = await supabase
-            .from('usuarios')
-            .update({ token: token })
-            .eq('id', userID);
-
-          if (error) {
-            console.error('Error guardando token:', error);
-            return res.status(500).json({ error: 'Error guardando el token de notificación' });
-          }
-
-          return res.status(200).json({ message: 'Token guardado correctamente.' });
-        } catch (err) {
-          console.error('Error al guardar el token:', err);
-          return res.status(500).json({ error: 'Error interno del servidor.' });
-        }
-  }
