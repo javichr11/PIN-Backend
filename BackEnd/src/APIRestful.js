@@ -45,7 +45,7 @@ async function checkUpcomingEvents() {
       eventID
     `)
     .eq('notificacion_enviada', false)
-    .eq('userID', 33);
+    .eq('userID', 33)
 
     console.log(inscripciones);
  
