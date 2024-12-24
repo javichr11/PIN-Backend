@@ -41,7 +41,7 @@ export async function checkUpcomingEvents() {
     .from('inscripciones')
     .select(`
       id,
-      user_id,
+      userID,
       eventos (
         id,
         nombre,
