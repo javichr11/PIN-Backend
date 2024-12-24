@@ -62,7 +62,7 @@ async function checkUpcomingEvents() {
       await supabase
         .from('notificaciones')
         .insert({
-          user_id: inscripcion.user_id,
+          userID: inscripcion.userID,
           mensaje: `El evento ${inscripcion.eventos.nombre} comenzará en menos de una hora`,
           tipo: 'evento_proximo'
         })
@@ -71,6 +71,10 @@ async function checkUpcomingEvents() {
         .from('inscripciones')
         .update({ notificacion_enviada: true })
         .eq('id', inscripcion.id)
+
+
+      console.log('Notificación enviada');
+      console.log('Actualizada la notificación_enviada');
     } catch (error) {
       console.error(`Error processing inscription ${inscripcion.id}:`, error)
     }
