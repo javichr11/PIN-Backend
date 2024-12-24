@@ -45,12 +45,12 @@ async function checkUpcomingEvents() {
       eventos (
         id,
         nombre,
-        fecha_inicio
+        fecha
       )
     `)
     .eq('notificacion_enviada', false)
-    .gte('eventos.fecha_inicio', new Date().toISOString())
-    .lte('eventos.fecha_inicio', oneHourFromNow.toISOString())
+    .gte('eventos.fecha', new Date().toISOString())
+    .lte('eventos.fecha', oneHourFromNow.toISOString())
 
   if (error) {
     console.error('Error checking events:', error)
