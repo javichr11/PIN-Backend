@@ -46,6 +46,8 @@ async function checkUpcomingEvents() {
     `)
     .eq('notificacion_enviada', false)
 
+    console.log(inscripciones);
+ 
   if (error) {
     console.error('Error checking inscripciones:', error)
     return
