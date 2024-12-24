@@ -181,7 +181,7 @@ exports.obtenerUsuarios = async (req, res) => {
   exports.useToken = async(req, res) => {
     const { userID, token } = req.body;
 
-        if (!userID || !notificationToken) {
+        if (!userID || !token) {
           return res.status(400).json({ error: 'userId y token son requeridos.' });
         }
 
