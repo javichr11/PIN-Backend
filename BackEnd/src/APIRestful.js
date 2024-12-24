@@ -42,39 +42,46 @@ async function checkUpcomingEvents() {
     .select(`
       id,
       userID,
-      eventos (
-        id,
-        nombre,
-        fecha
-      )
+      eventID
     `)
     .eq('notificacion_enviada', false)
-    .gte('eventos.fecha', new Date().toISOString())
-    .lte('eventos.fecha', oneHourFromNow.toISOString())
 
   if (error) {
-    console.error('Error checking events:', error)
+    console.error('Error checking inscripciones:', error)
     return
   }
 
   for (const inscripcion of inscripciones) {
     try {
-      await supabase
-        .from('notificaciones')
-        .insert({
-          userID: inscripcion.userID,
-          mensaje: `El evento ${inscripcion.eventos.nombre} comenzará en menos de una hora`,
-          tipo: 'evento_proximo'
-        })
+      // Obtener información del evento
+      const { data: evento, error: eventoError } = await supabase
+        .from('eventos')
+        .select('nombre, fecha')
+        .eq('id', inscripcion.eventID)
+        .single()
 
-      await supabase
-        .from('inscripciones')
-        .update({ notificacion_enviada: true })
-        .eq('id', inscripcion.id)
+      if (eventoError){ 
+        console.error(eventoError);
+      }
 
+      // Verificar si el evento está dentro del rango de tiempo
+      const fechaEvento = new Date(evento.fecha)
+      if (fechaEvento > new Date() && fechaEvento <= oneHourFromNow) {
+        await supabase
+          .from('notificaciones')
+          .insert({
+            userID: inscripcion.userID,
+            mensaje: `El evento ${evento.nombre} comenzará en menos de una hora`,
+          })
 
-      console.log('Notificación enviada');
-      console.log('Actualizada la notificación_enviada');
+        await supabase
+          .from('inscripciones')
+          .update({ notificacion_enviada: true })
+          .eq('id', inscripcion.id)
+
+        console.log('Notificación enviada')
+        console.log('Actualizada la notificación_enviada')
+      }
     } catch (error) {
       console.error(`Error processing inscription ${inscripcion.id}:`, error)
     }
