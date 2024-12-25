@@ -66,7 +66,7 @@ async function checkUpcomingEvents(userID) {
         .select('nombre, fecha')
         .eq('id', inscripcion.eventID)
         .single()
-
+      console.log("Los eventos a los que el usuario está inscrito son estos: ");
       console.log(evento);
       if (eventoError){ 
         console.error(eventoError);
@@ -74,22 +74,28 @@ async function checkUpcomingEvents(userID) {
 
       // Verificar si el evento está dentro del rango de tiempo
       const fechaEvento = new Date(evento.fecha)
-      if (fechaEvento > new Date() && fechaEvento <= oneHourLater) {
+      const tiempoRestante = fechaEvento - now;
+
+      console.log(`Tiempo restante para el evento '${evento.nombre}': ${tiempoRestante} ms`);
+
+      if (tiempoRestante > 0 && tiempoRestante <= 3600000) {
+
         await supabase
           .from('notificaciones')
           .insert({
             userID: inscripcion.userID,
             mensaje: `El evento ${evento.nombre} comenzará en menos de una hora`,
-          })
+          });
 
         await supabase
           .from('inscripciones')
           .update({ notificacion_enviada: true })
-          .eq('id', inscripcion.id)
+          .eq('id', inscripcion.id);
 
-        console.log('Notificación enviada')
-        console.log('Actualizada la notificación_enviada')
       }
+
+      console.log(`Notificación enviada para usuario ${inscripcion.userID} sobre el evento '${evento.nombre}'`);
+
     } catch (error) {
       console.error(`Error processing inscription ${inscripcion.id}:`, error)
     }
