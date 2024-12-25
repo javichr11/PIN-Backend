@@ -80,6 +80,8 @@ async function checkUpcomingEvents(userID) {
 
       if (tiempoRestante > 0 && tiempoRestante <= 3600000) {
 
+        console.log("Aquí ha entrado dentro del tiempo < de 1hora");
+
         await supabase
           .from('notificaciones')
           .insert({
@@ -92,9 +94,11 @@ async function checkUpcomingEvents(userID) {
           .update({ notificacion_enviada: true })
           .eq('id', inscripcion.id);
 
+
+        console.log("Aquí se debería de actualizar todo y enviar la notificación");  
+        console.log(`Notificación enviada para usuario ${inscripcion.userID} sobre el evento '${evento.nombre}'`);
       }
 
-      console.log(`Notificación enviada para usuario ${inscripcion.userID} sobre el evento '${evento.nombre}'`);
 
     } catch (error) {
       console.error(`Error processing inscription ${inscripcion.id}:`, error)
