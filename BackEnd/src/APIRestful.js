@@ -41,6 +41,9 @@ async function checkUpcomingEvents(userID) {
   const UTC = new Date();
   const now = new Date(UTC.toLocaleString());
 
+  console.log(UTC);
+  console.log(now);
+
   const { data: inscripciones, error } = await supabase
     .from('inscripciones')
     .select(`
