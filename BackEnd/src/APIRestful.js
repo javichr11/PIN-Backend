@@ -73,7 +73,7 @@ async function checkUpcomingEvents(userID) {
       }
 
       // Verificar si el evento está dentro del rango de tiempo
-      const fechaEvento = (new Date(evento.fecha)).toLocaleString
+      const fechaEvento = (new Date(evento.fecha)).toLocaleString();
       const tiempoRestante = fechaEvento - now;
 
       console.log("Fecha del evento: ", fechaEvento);
