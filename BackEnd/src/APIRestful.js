@@ -36,13 +36,28 @@ app.post('/test-notifications', async (req, res) => {
 
 
 async function checkUpcomingEvents(userID) {
-  console.log("User recibido: ", userID);
+  console.log("User recibido:", userID);
 
-  const UTC = new Date();
-  const now = new Date(UTC.toLocaleString());
+  // Obtener fecha actual en UTC
+  const now = new Date();
+  
+  // Función helper para formatear fechas
+  const formatDate = (date) => {
+    return {
+      utc: date.toISOString(),
+      local: date.toLocaleString('es-ES', { 
+        timeZone: 'Europe/Madrid',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      })
+    };
+  };
 
-  console.log(UTC);
-  console.log(now);
+  console.log("Fecha y hora actual:", formatDate(now));
 
   const { data: inscripciones, error } = await supabase
     .from('inscripciones')
@@ -52,41 +67,38 @@ async function checkUpcomingEvents(userID) {
       eventID
     `)
     .eq('notificacion_enviada', false)
-    .eq('userID', userID)
+    .eq('userID', userID);
 
-    console.log(inscripciones);
- 
   if (error) {
-    console.error('Error checking inscripciones:', error)
-    return
+    console.error('Error checking inscripciones:', error);
+    return;
   }
+
+  console.log("Inscripciones encontradas:", inscripciones);
 
   for (const inscripcion of inscripciones) {
     try {
-      // Obtener información del evento
       const { data: evento, error: eventoError } = await supabase
         .from('eventos')
         .select('nombre, fecha')
         .eq('id', inscripcion.eventID)
-        .single()
-      console.log("Los eventos a los que el usuario está inscrito son estos: ");
-      console.log(evento);
-      if (eventoError){ 
+        .single();
+
+      if (eventoError) {
         console.error(eventoError);
+        continue;
       }
 
-      // Verificar si el evento está dentro del rango de tiempo
-      const fechaEvento = (new Date(evento.fecha));
+      const fechaEvento = new Date(evento.fecha);
       const tiempoRestante = fechaEvento - now;
 
-      console.log("Fecha del evento: ", fechaEvento);
-      console.log("Fecha actual: ", now)
+      console.log(`\nEvento: ${evento.nombre}`);
+      console.log("Fecha del evento:", formatDate(fechaEvento));
+      console.log("Tiempo restante:", Math.floor(tiempoRestante / 1000 / 60), "minutos");
 
-      console.log(`Tiempo restante para el evento '${evento.nombre}': ${tiempoRestante} ms`);
-
+      // Comprobar si el evento está a menos de una hora
       if (tiempoRestante > 0 && tiempoRestante <= 3600000) {
-
-        console.log("Aquí ha entrado dentro del tiempo < de 1hora");
+        console.log(`¡Alerta! El evento ${evento.nombre} comenzará en menos de una hora`);
 
         await supabase
           .from('notificaciones')
@@ -100,14 +112,11 @@ async function checkUpcomingEvents(userID) {
           .update({ notificacion_enviada: true })
           .eq('id', inscripcion.id);
 
-
-        console.log("Aquí se debería de actualizar todo y enviar la notificación");  
-        console.log(`Notificación enviada para usuario ${inscripcion.userID} sobre el evento '${evento.nombre}'`);
+        console.log("✓ Notificación enviada y registro actualizado");
       }
 
-
     } catch (error) {
-      console.error(`Error processing inscription ${inscripcion.id}:`, error)
+      console.error(`Error procesando inscripción ${inscripcion.id}:`, error);
     }
   }
 }
