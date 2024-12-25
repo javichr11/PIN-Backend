@@ -37,10 +37,6 @@ app.post('/test-notifications', async (req, res) => {
 
 async function checkUpcomingEvents(userID) {
   console.log("User recibido: ", userID);
-  const now = new Date();
-  const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000);
-  console.log(oneHourLater);
-  
   const { data: inscripciones, error } = await supabase
     .from('inscripciones')
     .select(`
@@ -75,6 +71,9 @@ async function checkUpcomingEvents(userID) {
       // Verificar si el evento está dentro del rango de tiempo
       const fechaEvento = new Date(evento.fecha)
       const tiempoRestante = fechaEvento - now;
+
+      console.log("Fecha del evento: ", fechaEvento);
+      console.log("Fecha actual: ", now)
 
       console.log(`Tiempo restante para el evento '${evento.nombre}': ${tiempoRestante} ms`);
 
