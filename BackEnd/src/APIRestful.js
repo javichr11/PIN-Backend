@@ -37,6 +37,9 @@ app.post('/test-notifications', async (req, res) => {
 
 async function checkUpcomingEvents(userID) {
   console.log("User recibido: ", userID);
+
+  const now = new Date();
+
   const { data: inscripciones, error } = await supabase
     .from('inscripciones')
     .select(`
