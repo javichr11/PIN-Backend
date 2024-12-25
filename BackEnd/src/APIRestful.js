@@ -26,7 +26,7 @@ app.use('/valoracion', ratingRoutes);
 app.use('/insignia', insigniaRoutes);
 
 app.post('/test-notifications', async (req, res) => {
-  const {userID} = 33;//req.body
+  const userID = 33;//req.body
   await checkUpcomingEvents(userID);
   res.json({ success: true });
 });
