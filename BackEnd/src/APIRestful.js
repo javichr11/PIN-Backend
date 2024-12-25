@@ -32,7 +32,7 @@ app.post('/test-notifications', async (req, res) => {
 });
 
 
-cron.schedule('* * * * *', checkUpcomingEvents);
+//cron.schedule('* * * * *', checkUpcomingEvents);
 
 
 async function checkUpcomingEvents(userID) {
