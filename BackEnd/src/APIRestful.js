@@ -36,6 +36,7 @@ cron.schedule('* * * * *', checkUpcomingEvents);
 
 
 async function checkUpcomingEvents(userID) {
+  console.log("User recibido: ", userID);
   const now = new Date();
   const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000);
   console.log(oneHourLater);
