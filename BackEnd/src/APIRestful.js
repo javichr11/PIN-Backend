@@ -39,7 +39,7 @@ async function checkUpcomingEvents(userID) {
   console.log("User recibido: ", userID);
 
   const UTC = new Date();
-  const now = UTC.toLocaleString().getTime();
+  const now = new Date(UTC.toLocaleString());
 
   const { data: inscripciones, error } = await supabase
     .from('inscripciones')
@@ -73,7 +73,7 @@ async function checkUpcomingEvents(userID) {
       }
 
       // Verificar si el evento está dentro del rango de tiempo
-      const fechaEvento = (new Date(evento.fecha)).toLocaleString().getTime();
+      const fechaEvento = (new Date(evento.fecha));
       const tiempoRestante = fechaEvento - now;
 
       console.log("Fecha del evento: ", fechaEvento);
