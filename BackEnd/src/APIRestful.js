@@ -26,7 +26,8 @@ app.use('/valoracion', ratingRoutes);
 app.use('/insignia', insigniaRoutes);
 
 app.post('/test-notifications', async (req, res) => {
-  await checkUpcomingEvents();
+  const {userID} = 33;//req.body
+  await checkUpcomingEvents(userID);
   res.json({ success: true });
 });
 
@@ -34,7 +35,7 @@ app.post('/test-notifications', async (req, res) => {
 cron.schedule('* * * * *', checkUpcomingEvents);
 
 
-async function checkUpcomingEvents() {
+async function checkUpcomingEvents(userID) {
   const now = new Date();
   const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000);
   console.log(oneHourLater);
@@ -47,7 +48,7 @@ async function checkUpcomingEvents() {
       eventID
     `)
     .eq('notificacion_enviada', false)
-    .eq('userID', 33)//hacerlo genérico con USERID
+    .eq('userID', userID)
 
     console.log(inscripciones);
  
