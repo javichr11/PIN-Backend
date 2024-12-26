@@ -110,6 +110,76 @@ exports.registrarUsuario = async (req, res) => {
 };
 
 
+exports.iniciarSesion = async (req, res) => {
+  try {
+    const { nombre_usuario, password } = req.body;
+
+    // Validar que ambos campos estén presentes
+    if (!nombre_usuario || !password) {
+      return res.status(400).json({
+        message: "Debe proporcionar nombre de usuario o móvil y contraseña.",
+      });
+    }
+
+    let user = null;
+
+    // Intentar buscar al usuario por nombre de usuario
+    const { data: userByUsername, error: usernameError } = await supabase
+      .from("usuarios")
+      .select("*")
+      .eq("nombre_usuario", nombre_usuario)
+      .single();
+
+    if (!userByUsername && usernameError?.code !== "PGRST116") {
+      // Si ocurre un error inesperado al buscar por nombre de usuario
+      return res.status(500).json({ message: "Error al buscar el usuario.", error: usernameError });
+    }
+
+    // Si no se encuentra por nombre de usuario, buscar por móvil
+    if (!userByUsername) {
+      const { data: userByPhone, error: phoneError } = await supabase
+        .from("usuarios")
+        .select("*")
+        .eq("movil", nombre_usuario) // Usar el mismo campo `nombre_usuario` para móvil
+        .single();
+
+      if (!userByPhone && phoneError?.code !== "PGRST116") {
+        // Si ocurre un error inesperado al buscar por móvil
+        return res.status(500).json({ message: "Error al buscar el usuario por móvil.", error: phoneError });
+      }
+
+      user = userByPhone;
+    } else {
+      user = userByUsername;
+    }
+
+    // Si no se encontró el usuario por ninguno de los métodos
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado." });
+    }
+
+    // Verificar si la contraseña es correcta
+    if (user.password !== password) {
+      return res.status(401).json({ message: "Contraseña incorrecta." });
+    }
+
+    // Si las credenciales son válidas, retornar éxito
+    return res.status(200).json({
+      message: "Inicio de sesión exitoso.",
+      user: {
+        id: user.id,
+        nombre: user.nombre,
+        nombre_usuario: user.nombre_usuario,
+        movil: user.movil,
+        foto: user.foto,
+      },
+    });
+  } catch (error) {
+    console.error("Error al iniciar sesión:", error);
+    return res.status(500).json({ message: "Error del servidor.", error });
+  }
+};
+
 
 
 exports.obtenerUsuarios = async (req, res) => {
