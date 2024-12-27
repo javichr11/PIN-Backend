@@ -112,12 +112,16 @@ for(const inscripcion of inscripciones){
       if (minutosRestantes > 0 && minutosRestantes <= 60) {
         console.log(`¡Alerta! El evento ${evento.nombre} comenzará en menos de una hora`);
 
-        await supabase
+        const { data: noti, error: notiError } = await supabase
           .from('notificaciones')
           .insert({
-            userID: inscripcion.userID,
-            mensaje: `El evento ${evento.nombre} comenzará ${minutosRestantes} minutos`,
+            userID: userID,
+            mensaje: `El evento ${evento.nombre} comenzará en ${minutosRestantes} minutos`,
           });
+
+          if(notiError){
+            console.error('Error al insertar la notificación:', notiError);
+          }
 
         await supabase
           .from('inscripciones')
