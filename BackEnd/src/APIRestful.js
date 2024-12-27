@@ -78,7 +78,7 @@ async function checkEvents(userID) {
 
     console.log("Las inscripciones son: ", inscripciones);
 
-for(const inscripcion in inscripciones){
+for(const inscripcion of inscripciones){
   try{
 
     console.log("Buscando eventos...");
