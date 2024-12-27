@@ -147,7 +147,7 @@ async function checkEvents(userID) {
       return;
     }
 
-    console.log(inscripciones);
+    console.log("Las inscripciones son: ", inscripciones);
 
 for(const inscripcion in inscripciones){
   try{
@@ -167,6 +167,26 @@ for(const inscripcion in inscripciones){
 
       const tiempoRestante = fechaEvento - now;
       console.log("El tiempo que resta es: ", tiempoRestante);
+
+      if (tiempoRestante > 0 && tiempoRestante <= 3600000) {
+        console.log(`¡Alerta! El evento ${evento.nombre} comenzará en menos de una hora`);
+
+        await supabase
+          .from('notificaciones')
+          .insert({
+            userID: inscripcion.userID,
+            mensaje: `El evento ${evento.nombre} comenzará en menos de una hora`,
+          });
+
+        await supabase
+          .from('inscripciones')
+          .update({ notificacion_enviada: true })
+          .eq('id', inscripcion.id);
+
+        console.log("✓ Notificación enviada y registro actualizado");
+      }
+
+
   }catch(error){
     console.error('Error al buscar el evento:', error);
   }
