@@ -172,6 +172,7 @@ exports.iniciarSesion = async (req, res) => {
         nombre_usuario: user.nombre_usuario,
         movil: user.movil,
         foto: user.foto,
+        edad: user.edad,
       },
     });
   } catch (error) {
