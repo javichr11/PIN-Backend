@@ -94,8 +94,9 @@ for(const inscripcion of inscripciones){
         continue;
       }
       console.log("Aquí ha recogido los eventos");
-      const fechaActual = new Date(evento.fecha);
-      console.log(fechaActual);
+      const fecha = new Date(evento.fecha);
+      const fechaEvento = formatoEspañol.format(fecha);
+      console.log("Fecha del evento: ", fechaEvento);
 
       const tiempoRestante = fechaEvento - now;
       console.log("El tiempo que resta es: ", tiempoRestante);
