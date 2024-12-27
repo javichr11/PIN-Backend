@@ -103,8 +103,7 @@ exports.registrarUsuario = async (req, res) => {
       return res.status(500).json({ message: 'Error al crear el usuario', errorRegistro});
     }
 
-    const datosUsuario = data[0];
-    console.log(datosUsuario);
+    console.log(data);
 
       if(errorRecoger){
         console.error("El error no se por que me llega aquí", errorRecoger);
