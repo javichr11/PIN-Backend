@@ -101,36 +101,22 @@ for(const inscripcion of inscripciones){
         continue;
       }
 
-      const fechaEventoPrueba = new Date(evento.fecha);
-      console.log("Fecha prueba", fechaEventoPrueba);
+      const fechaEvento = new Date(evento.fecha);
+      console.log("Fecha prueba", fechaEvento);//Fecha correcta
 
-
-      console.log("Aquí ha recogido los eventos");
-      const fecha = new Date(evento.fecha);
-      const fechaEventoString = formatoEspañol.format(fecha);
-      console.log("Fecha del evento: ", fechaEventoString);
-
-      const [datePart, timePart] = fechaEventoString.split(', ');
-      const [day, month, year] = datePart.split('/');
-      const [hour, minute, second] = timePart.split(':');
-      
-      const fechaEvento = new Date(year, month - 1, day, hour, minute, second);
-      console.log("Fecha convertida de nuevo a Date:", fechaEvento);
-
-
-      const tiempoRestante = fechaEvento.getTime() - nowUTC.getTime();
+      const tiempoRestante = fechaEvento.getTime() - fechaNow.getTime();
 
       const minutosRestantes = Math.floor(tiempoRestante / (1000 * 60));
       console.log("Minutos restantes:", minutosRestantes);
 
-      if (tiempoRestante > 0 && tiempoRestante <= 3600000) {
+      if (minutosRestantes > 0 && minutosRestantes <= 60) {
         console.log(`¡Alerta! El evento ${evento.nombre} comenzará en menos de una hora`);
 
         await supabase
           .from('notificaciones')
           .insert({
             userID: inscripcion.userID,
-            mensaje: `El evento ${evento.nombre} comenzará en menos de una hora`,
+            mensaje: `El evento ${evento.nombre} comenzará ${minutosRestantes} minutos`,
           });
 
         await supabase
