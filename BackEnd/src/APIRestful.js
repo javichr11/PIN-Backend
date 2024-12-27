@@ -98,7 +98,7 @@ for(const inscripcion of inscripciones){
       const fechaEvento = formatoEspañol.format(fecha);
       console.log("Fecha del evento: ", fechaEvento);
 
-      const tiempoRestante = fechaEvento.getTime() - now.getTime();
+      const tiempoRestante = fecha.getTime() - nowUTC.getTime();
       console.log("El tiempo que resta es: ", tiempoRestante);
 
       if (tiempoRestante > 0 && tiempoRestante <= 3600000) {
