@@ -113,8 +113,8 @@ async function checkEvents(userID) {
 
   console.log("El userID recibido es: ", userID);
 
-  const now = new Date();
-  console.log(now.toLocaleString);
+  const now = new Date().toLocaleString;
+  console.log(now);
 
 }
 
