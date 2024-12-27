@@ -127,7 +127,7 @@ async function checkEvents(userID) {
 
   const nowUTC = new Date();
   console.log("Fecha actual");
-  const now = formatoEspañol.format(now);
+  const now = formatoEspañol.format(nowUTC);
   console.log(now);
 
   //SELECCIONAR LAS INSCRIPCIONES CON USERID CORRESPONDIENTE Y NOTIFICACION FALSE
