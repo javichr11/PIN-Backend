@@ -113,8 +113,49 @@ async function checkEvents(userID) {
 
   console.log("El userID recibido es: ", userID);
 
-  const now = new Date().toLocaleString;
+  const now = new Date();
   console.log(now);
+
+  //SELECCIONAR LAS INSCRIPCIONES CON USERID CORRESPONDIENTE Y NOTIFICACION FALSE
+
+  const { data: inscripciones, errorInscripcion } = await supabase
+    .from('inscripciones')
+    .select(`
+      id,
+      userID,
+      eventID
+    `)
+    .eq('notificacion_enviada', false)
+    .eq('userID', userID);
+
+    if (errorInscripcion) {
+      console.error('Error comprobando las inscripciones:', errorInscripcion);
+      return;
+    }
+
+for(const inscripcion in inscripciones){
+  try{
+
+
+    const { data: evento, error: eventoError } = await supabase
+        .from('eventos')
+        .select('nombre, fecha')
+        .eq('id', inscripcion.eventID)
+        .single();
+
+      if (eventoError) {
+        console.error(eventoError);
+        continue;
+      }
+
+      const fechaActual = new Date(evento.fecha);
+      console.log(fechaActual);
+
+
+  }catch(error){
+    console.error('Error al buscar el evento:', error);
+  }
+}
 
 }
 
