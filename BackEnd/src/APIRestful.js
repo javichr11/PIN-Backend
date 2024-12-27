@@ -111,9 +111,23 @@ async function checkUpcomingEvents(userID) {
 
 async function checkEvents(userID) {
 
+  const formatoEspañol = new Intl.DateTimeFormat('es-ES', {
+    timeZone: 'Europe/Madrid',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  });
+
+
   console.log("El userID recibido es: ", userID);
 
-  const now = new Date();
+  const nowUTC = new Date();
+  console.log("Fecha actual");
+  const now = formatoEspañol.format(now);
   console.log(now);
 
   //SELECCIONAR LAS INSCRIPCIONES CON USERID CORRESPONDIENTE Y NOTIFICACION FALSE
@@ -135,8 +149,6 @@ async function checkEvents(userID) {
 
 for(const inscripcion in inscripciones){
   try{
-
-
     const { data: evento, error: eventoError } = await supabase
         .from('eventos')
         .select('nombre, fecha')
@@ -147,11 +159,12 @@ for(const inscripcion in inscripciones){
         console.error(eventoError);
         continue;
       }
-
+      console.log("Aquí ha recogido los eventos");
       const fechaActual = new Date(evento.fecha);
       console.log(fechaActual);
 
-
+      const tiempoRestante = fechaEvento - now;
+      console.log("El tiempo que resta es: ", tiempoRestante);
   }catch(error){
     console.error('Error al buscar el evento:', error);
   }
