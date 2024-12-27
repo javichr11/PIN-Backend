@@ -57,7 +57,14 @@ async function checkEvents(userID) {
   const nowUTC = new Date();
   console.log("Fecha actual");
   const now = formatoEspañol.format(nowUTC);
-  console.log(now);
+
+  const [datePartNow, timePartNow] = now.split(', ');
+  const [dayNow, monthNow, yearNow] = datePartNow.split('/');
+  const [hourNow, minuteNow, secondNow] = timePartNow.split(':');
+  
+  const fechaNow = new Date(yearNow, monthNow - 1, dayNow, hourNow, minuteNow, secondNow);
+  console.log(fechaNow);
+
 
   //SELECCIONAR LAS INSCRIPCIONES CON USERID CORRESPONDIENTE Y NOTIFICACION FALSE
 
@@ -95,10 +102,18 @@ for(const inscripcion of inscripciones){
       }
       console.log("Aquí ha recogido los eventos");
       const fecha = new Date(evento.fecha);
-      const fechaEvento = formatoEspañol.format(fecha);
-      console.log("Fecha del evento: ", fechaEvento);
+      const fechaEventoString = formatoEspañol.format(fecha);
+      console.log("Fecha del evento: ", fechaEventoString);
 
-      const tiempoRestante = fecha.getTime() - nowUTC.getTime();
+      const [datePart, timePart] = fechaEventoString.split(', ');
+      const [day, month, year] = datePart.split('/');
+      const [hour, minute, second] = timePart.split(':');
+      
+      const fechaEvento = new Date(year, month - 1, day, hour, minute, second);
+      console.log("Fecha convertida de nuevo a Date:", fechaEvento);
+
+
+      const tiempoRestante = fechaEvento.getTime() - nowUTC.getTime();
 
       const minutosRestantes = Math.floor(tiempoRestante / (1000 * 60));
       console.log("Minutos restantes:", minutosRestantes);
