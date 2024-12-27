@@ -51,11 +51,7 @@ async function checkEvents(userID) {
     hour12: false
   });
 
-
-  console.log("El userID recibido es: ", userID);
-
   const nowUTC = new Date();
-  console.log("Fecha actual");
   const now = formatoEspañol.format(nowUTC);
 
   const [datePartNow, timePartNow] = now.split(', ');
@@ -63,8 +59,6 @@ async function checkEvents(userID) {
   const [hourNow, minuteNow, secondNow] = timePartNow.split(':');
   
   const fechaNow = new Date(yearNow, monthNow - 1, dayNow, hourNow, minuteNow, secondNow);
-  console.log(fechaNow);//FECHA CORRECTA
-
 
   //SELECCIONAR LAS INSCRIPCIONES CON USERID CORRESPONDIENTE Y NOTIFICACION FALSE
 
@@ -83,12 +77,8 @@ async function checkEvents(userID) {
       return;
     }
 
-    console.log("Las inscripciones son: ", inscripciones);
-
 for(const inscripcion of inscripciones){
   try{
-
-    console.log("Buscando eventos...");
     const { data: evento, error: eventoError } = await supabase
         .from('eventos')
         .select('nombre, fecha')
@@ -96,27 +86,22 @@ for(const inscripcion of inscripciones){
         .single();
 
       if (eventoError) {
-        console.log("Error en la búsqueda de eventos");
+        console.error("Error en la búsqueda de eventos");
         console.error(eventoError);
         continue;
       }
-
       const fechaEvento = new Date(evento.fecha);
-      console.log("Fecha prueba", fechaEvento);//Fecha correcta
 
       const tiempoRestante = fechaEvento.getTime() - fechaNow.getTime();
 
       const minutosRestantes = Math.floor(tiempoRestante / (1000 * 60));
-      console.log("Minutos restantes:", minutosRestantes);
 
       if (minutosRestantes > 0 && minutosRestantes <= 60) {
-        console.log(`¡Alerta! El evento ${evento.nombre} comenzará en menos de una hora`);
-
         const { data: noti, error: notiError } = await supabase
           .from('notificaciones')
           .insert({
             userID: userID,
-            mensaje: `El evento ${evento.nombre} comenzará en ${minutosRestantes} minutos`,
+            mensaje: `El evento ${evento.nombre} comenzará en menos de 1 hora`,
           });
 
           if(notiError){
@@ -130,7 +115,6 @@ for(const inscripcion of inscripciones){
 
         console.log("✓ Notificación enviada y registro actualizado");
       }
-
 
   }catch(error){
     console.error('Error al buscar el evento:', error);
