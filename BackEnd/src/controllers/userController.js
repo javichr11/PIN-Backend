@@ -103,12 +103,17 @@ exports.registrarUsuario = async (req, res) => {
       return res.status(500).json({ message: 'Error al crear el usuario', errorRegistro});
     }
 
-    console.log(data);
+   const {datosUsuario, errorDatos} = await supabase
+   .from('usuarios')
+   .select('*') 
+   .eq('nombre_usuario', nombre_usuario)
+   .single();
 
-      if(errorRecoger){
-        console.error("El error no se por que me llega aquí", errorRecoger);
-      }
+    console.log(datosUsuario);
 
+    if(errorDatos){
+      console.error(errorDatos);
+    }
 
   } catch (error) {
     console.log(error);
