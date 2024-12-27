@@ -99,7 +99,9 @@ for(const inscripcion of inscripciones){
       console.log("Fecha del evento: ", fechaEvento);
 
       const tiempoRestante = fecha.getTime() - nowUTC.getTime();
-      console.log("El tiempo que resta es: ", tiempoRestante);
+
+      const minutosRestantes = Math.floor(tiempoRestante / (1000 * 60));
+      console.log("Minutos restantes:", minutosRestantes);
 
       if (tiempoRestante > 0 && tiempoRestante <= 3600000) {
         console.log(`¡Alerta! El evento ${evento.nombre} comenzará en menos de una hora`);
