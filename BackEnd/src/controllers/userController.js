@@ -104,23 +104,12 @@ exports.registrarUsuario = async (req, res) => {
     }
 
     const datosUsuario = data[0];
+    console.log(datosUsuario);
 
       if(errorRecoger){
         console.error("El error no se por que me llega aquí", errorRecoger);
       }
 
-
-    return res.status(200).json({
-      message: "Registro realizado con éxito",
-      user: {
-        id: datosUsuario.id,
-        nombre: datosUsuario.nombre,
-        nombre_usuario: datosUsuario.nombre_usuario,
-        movil: datosUsuario.movil,
-        foto: datosUsuario.foto,
-        edad: datosUsuario.edad,
-      },
-    });
 
   } catch (error) {
     console.log(error);
