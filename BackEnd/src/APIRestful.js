@@ -26,8 +26,8 @@ app.use('/valoracion', ratingRoutes);
 app.use('/insignia', insigniaRoutes);
 
 app.post('/test-notifications', async (req, res) => {
-  const userID = 33;//req.body
-  await checkUpcomingEvents(userID);
+  const userID = req.body;
+  await checkEvents(userID);
   res.json({ success: true });
 });
 
@@ -40,22 +40,6 @@ async function checkUpcomingEvents(userID) {
 
   // Obtener fecha actual en UTC
   const now = new Date();
-  
-  // Función helper para formatear fechas
-  const formatDate = (date) => {
-    return {
-      utc: date.toISOString(),
-      local: date.toLocaleString('es-ES', { 
-        timeZone: 'Europe/Madrid',
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-      })
-    };
-  };
 
   console.log("Fecha y hora actual:", formatDate(now));
 
@@ -120,6 +104,26 @@ async function checkUpcomingEvents(userID) {
     }
   }
 }
+
+
+//PRUEBA A MANO//
+
+
+async function checkEvents(userID) {
+
+  console.log("El userID recibido es: ", userID);
+
+  const now = new Date();
+  console.log(now.toLocaleString);
+
+}
+
+
+
+
+
+
+
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Servidor escuchando en http://0.0.0.0:${PORT}`);
