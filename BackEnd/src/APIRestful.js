@@ -63,7 +63,7 @@ async function checkEvents(userID) {
   const [hourNow, minuteNow, secondNow] = timePartNow.split(':');
   
   const fechaNow = new Date(yearNow, monthNow - 1, dayNow, hourNow, minuteNow, secondNow);
-  console.log(fechaNow);
+  console.log(fechaNow);//FECHA CORRECTA
 
 
   //SELECCIONAR LAS INSCRIPCIONES CON USERID CORRESPONDIENTE Y NOTIFICACION FALSE
@@ -100,6 +100,11 @@ for(const inscripcion of inscripciones){
         console.error(eventoError);
         continue;
       }
+
+      const fechaEventoPrueba = new Date(evento.fecha);
+      console.log("Fecha prueba", fechaEventoPrueba);
+
+
       console.log("Aquí ha recogido los eventos");
       const fecha = new Date(evento.fecha);
       const fechaEventoString = formatoEspañol.format(fecha);
