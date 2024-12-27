@@ -147,6 +147,8 @@ async function checkEvents(userID) {
       return;
     }
 
+    console.log(inscripciones);
+
 for(const inscripcion in inscripciones){
   try{
     const { data: evento, error: eventoError } = await supabase
