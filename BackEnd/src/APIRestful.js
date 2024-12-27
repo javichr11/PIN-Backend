@@ -35,77 +35,6 @@ app.post('/test-notifications', async (req, res) => {
 //cron.schedule('* * * * *', checkUpcomingEvents);
 
 
-async function checkUpcomingEvents(userID) {
-  console.log("User recibido:", userID);
-
-  // Obtener fecha actual en UTC
-  const now = new Date();
-
-  console.log("Fecha y hora actual:", formatDate(now));
-
-  const { data: inscripciones, error } = await supabase
-    .from('inscripciones')
-    .select(`
-      id,
-      userID,
-      eventID
-    `)
-    .eq('notificacion_enviada', false)
-    .eq('userID', userID);
-
-  if (error) {
-    console.error('Error checking inscripciones:', error);
-    return;
-  }
-
-  console.log("Inscripciones encontradas:", inscripciones);
-
-  for (const inscripcion of inscripciones) {
-    try {
-      const { data: evento, error: eventoError } = await supabase
-        .from('eventos')
-        .select('nombre, fecha')
-        .eq('id', inscripcion.eventID)
-        .single();
-
-      if (eventoError) {
-        console.error(eventoError);
-        continue;
-      }
-
-      const fechaEvento = new Date(evento.fecha);
-      const tiempoRestante = fechaEvento - now;
-
-      console.log(`\nEvento: ${evento.nombre}`);
-      console.log("Fecha del evento:", formatDate(fechaEvento));
-      console.log("Tiempo restante:", Math.floor(tiempoRestante / 1000 / 60), "minutos");
-
-      // Comprobar si el evento está a menos de una hora
-      if (tiempoRestante > 0 && tiempoRestante <= 3600000) {
-        console.log(`¡Alerta! El evento ${evento.nombre} comenzará en menos de una hora`);
-
-        await supabase
-          .from('notificaciones')
-          .insert({
-            userID: inscripcion.userID,
-            mensaje: `El evento ${evento.nombre} comenzará en menos de una hora`,
-          });
-
-        await supabase
-          .from('inscripciones')
-          .update({ notificacion_enviada: true })
-          .eq('id', inscripcion.id);
-
-        console.log("✓ Notificación enviada y registro actualizado");
-      }
-
-    } catch (error) {
-      console.error(`Error procesando inscripción ${inscripcion.id}:`, error);
-    }
-  }
-}
-
-
 //PRUEBA A MANO//
 
 
@@ -151,6 +80,8 @@ async function checkEvents(userID) {
 
 for(const inscripcion in inscripciones){
   try{
+
+    console.log("Buscando eventos...");
     const { data: evento, error: eventoError } = await supabase
         .from('eventos')
         .select('nombre, fecha')
@@ -158,6 +89,7 @@ for(const inscripcion in inscripciones){
         .single();
 
       if (eventoError) {
+        console.log("Error en la búsqueda de eventos");
         console.error(eventoError);
         continue;
       }
