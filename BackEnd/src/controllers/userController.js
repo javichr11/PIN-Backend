@@ -106,6 +106,19 @@ exports.registrarUsuario = async (req, res) => {
 
   if(data){
     console.log(data);
+    const [user] = data;
+
+    return res.status(200).json({
+      message: "Inicio de sesión exitoso.",
+      user: {
+        id: user.id,
+        nombre: user.nombre,
+        nombre_usuario: user.nombre_usuario,
+        movil: user.movil,
+        foto: user.foto,
+        edad: user.edad,
+      },
+    });
   }
 
   } catch (error) {
