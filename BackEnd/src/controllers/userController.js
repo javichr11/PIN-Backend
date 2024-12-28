@@ -97,7 +97,8 @@ exports.registrarUsuario = async (req, res) => {
         nombre_usuario,
         movil
       }
-    ]);
+    ])
+    .select();
 
     if (errorRegistro) {
       return res.status(500).json({ message: 'Error al crear el usuario', errorRegistro});
