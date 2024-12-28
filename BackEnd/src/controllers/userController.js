@@ -87,7 +87,7 @@ exports.registrarUsuario = async (req, res) => {
     }
 
     // Registrar al nuevo usuario
-    const { data, errorRegistro } = await supabase
+    const { user, errorRegistro } = await supabase
       .from('usuarios')
       .insert([{
         nombre,
@@ -103,11 +103,17 @@ exports.registrarUsuario = async (req, res) => {
     if (errorRegistro) {
       return res.status(500).json({ message: 'Error al crear el usuario', errorRegistro});
     }
-
-    console.log(nombre_usuario);
-  if(data){
-    console.log(data);
-  }
+    return res.status(200).json({
+      message: "Registro de usuario correcto",
+      user: {
+        id: user.id,
+        nombre: user.nombre,
+        nombre_usuario: user.nombre_usuario,
+        movil: user.movil,
+        foto: user.foto,
+        edad: user.edad,
+      },
+    });
 
   } catch (error) {
     console.log(error);
