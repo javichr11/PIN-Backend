@@ -104,8 +104,8 @@ exports.registrarUsuario = async (req, res) => {
     }
 
     console.log(nombre_usuario);
-
-   const {datosUsuario, errorDatos} = await supabase
+  if(data){
+    const {datosUsuario, errorDatos} = await supabase
    .from('usuarios')
    .select('*') 
    .eq('nombre_usuario', nombre_usuario)
@@ -116,6 +116,7 @@ exports.registrarUsuario = async (req, res) => {
     if(errorDatos){
       console.error(errorDatos);
     }
+  }
 
   } catch (error) {
     console.log(error);
