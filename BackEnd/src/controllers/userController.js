@@ -100,18 +100,19 @@ exports.registrarUsuario = async (req, res) => {
     ])
     .select();
 
+    console.log(user);
     if (errorRegistro) {
       return res.status(500).json({ message: 'Error al crear el usuario', errorRegistro});
     }
     return res.status(200).json({
       message: "Registro de usuario correcto",
       user: {
-        id: user.id,
-        nombre: user.nombre,
-        nombre_usuario: user.nombre_usuario,
-        movil: user.movil,
-        foto: user.foto,
-        edad: user.edad,
+        id: user.user.id,
+        nombre: user.user.nombre,
+        nombre_usuario: user.user.nombre_usuario,
+        movil: user.user.movil,
+        foto: user.user.foto,
+        edad: user.user.edad,
       },
     });
 
