@@ -109,7 +109,7 @@ exports.registrarUsuario = async (req, res) => {
     const [user] = data;
 
     return res.status(200).json({
-      message: "Inicio de sesión exitoso.",
+      message: "¡Registro de usuario realizado correctamente!",
       user: {
         id: user.id,
         nombre: user.nombre,
