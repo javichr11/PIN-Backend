@@ -224,6 +224,66 @@ exports.inscribirAEvento = async (req, res) => {
     }
 };
 
+exports.obtenerEventosPorAutor = async (req, res) => {
+    const { userID } = req.params;
+
+    try {
+        const { data, error } = await supabase
+            .from('eventos')
+            .select('*')
+            .eq('userID', userID);
+
+        if (error) {
+            return res.status(500).json({ message: 'Error al obtener los eventos', error });
+        }
+
+        return res.status(200).json({ message: 'Eventos obtenidos exitosamente', data });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error del servidor', error });
+    }
+};
+
+async function obtenerInscripciones (req, res) {
+    const { userID } = req.params;
+    const {data, error } = await supabase 
+        .from('inscripciones')
+        .select('eventID')
+        .eq('userID', userID)
+    if (error) {
+        throw new Error(`Error al obtener los eventos: ${error} `);
+    }
+    if (!data) {
+        throw new Error('No se encontraron inscripciones del usuario');
+    }
+    return data;
+}
+
+
+exports.obtenerEventosInscrito = async (req, res) => {
+    const { userID } = req.params;
+
+    try {
+        // Obtener las inscripciones del usuario
+        const inscripciones = await obtenerInscripciones(req, res);
+
+        // Obtener los IDs de los eventos a los que el usuario está inscrito
+        const eventIDs = inscripciones.map(inscripcion => inscripcion.eventID);
+
+        // Obtener los eventos correspondientes a los IDs
+        const { data: eventos, error } = await supabase
+            .from('eventos')
+            .select('*')
+            .in('id', eventIDs);
+
+        if (error) {
+            return res.status(500).json({ message: 'Error al obtener los eventos inscritos', error });
+        }
+
+        return res.status(200).json({ message: 'Eventos inscritos obtenidos exitosamente', data: eventos });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error del servidor', error });
+    }
+};
 // Las funciones de abajo son para obtener eventos filtrados
 // Función para obtener las preferencias del usuario
 // No borrar esta funcion. La funcion export.obtenerEventos no sirve
