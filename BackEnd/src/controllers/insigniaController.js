@@ -168,16 +168,22 @@ const obtenerLogradas = async (req,res) =>{
         const { data, error } = await supabase
             .from('insignias_usuario')
             .select(`
-                insignias(*)
+                insignias(*), progreso_actual
             `)
-            .eq('userID', userID)
-            .eq('desbloqueada', true);
+            .eq('userID', userID);
         
-        const insignias = data.map(record => record.insignias);
+        const logrosAdaptados = data.map((logro) => ({
+            id: logro.insignias.id,
+            nombre: logro.insignias.nombre,
+            descripcion: logro.insignias.descripcion,
+            icono: logro.insignias.icono || 'https://via.placeholder.com/50',
+            progreso: logro.progreso_actual,
+            meta: logro.insignias.criterioMin,
+        }));
         if (error) {
           return res.status(500).json({ message: 'Error al obtener las insignias', error});
         }
-        return res.status(200).json({message: 'Las insignias se deberían de recoger bien', insignias});
+        return res.status(200).json({message: 'Las insignias se deberían de recoger bien', logrosAdaptados});
       }catch(error){
           return res.status(500).json({ message: 'Error del servidor(Insignia)', error});
       };
