@@ -26,9 +26,9 @@ app.use('/valoracion', ratingRoutes);
 app.use('/insignia', insigniaRoutes);
 
 app.post('/notifications', async (req, res) => {
-  const {userID} = req.body;
-  await checkEvents(userID);
-  res.json({ success: true });
+  const { userID } = req.body;
+  const notifications = await checkEvents(userID);
+  res.json(notifications);
 });
 
 
@@ -120,6 +120,21 @@ for(const inscripcion of inscripciones){
     console.error('Error al buscar el evento:', error);
   }
 }
+
+const { data: notifications, error } = await supabase
+    .from('notificaciones')
+    .select('*')
+    .eq('userID', userID)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error al obtener notificaciones:', error);
+    return [];
+  }
+
+  return notifications;
+
+
 
 }
 
