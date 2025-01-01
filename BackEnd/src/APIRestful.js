@@ -25,7 +25,7 @@ app.use('/comentario', commentsRoutes);
 app.use('/valoracion', ratingRoutes);
 app.use('/insignia', insigniaRoutes);
 
-app.post('/test-notifications', async (req, res) => {
+app.post('/notifications', async (req, res) => {
   const {userID} = req.body;
   await checkEvents(userID);
   res.json({ success: true });
