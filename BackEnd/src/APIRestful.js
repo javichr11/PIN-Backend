@@ -114,6 +114,8 @@ for(const inscripcion of inscripciones){
           .delete()
           .lt('fecha_creacion', evento.fecha); 
 
+          console.log("Notificaciones eliminadas: " + deleted);
+
         if (errorDeleted) {
           console.error("Error al borrar notis " + errorDeleted);
         }
