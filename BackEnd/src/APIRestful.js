@@ -32,11 +32,6 @@ app.post('/notifications', async (req, res) => {
 });
 
 
-//cron.schedule('* * * * *', checkUpcomingEvents);
-
-
-//PRUEBA A MANO//
-
 
 async function checkEvents(userID) {
 
@@ -125,7 +120,7 @@ const { data: notifications, error } = await supabase
     .from('notificaciones')
     .select('*')
     .eq('userID', userID)
-    .order('created_at', { ascending: false });
+    .order('fecha_creacion', { ascending: false });
 
   if (error) {
     console.error('Error al obtener notificaciones:', error);
@@ -134,16 +129,7 @@ const { data: notifications, error } = await supabase
 
   return notifications;
 
-
-
 }
-
-
-
-
-
-
-
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Servidor escuchando en http://0.0.0.0:${PORT}`);
