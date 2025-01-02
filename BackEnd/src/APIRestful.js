@@ -55,16 +55,15 @@ async function checkEvents(userID) {
   
   const fechaNow = new Date(yearNow, monthNow - 1, dayNow, hourNow, minuteNow, secondNow);
 
-  const { error: deleteError } = await supabase
+
+  const {data: deleted, errorDeleted} = await supabase
     .from('notificaciones')
     .delete()
-    .lt('fecha_creacion', fechaNow.toISOString());
+    .lt('fecha_creacion', new Date().toISOString());
 
-
-  if (deleteError) {
-    console.error('Error al eliminar notificaciones antiguas:', deleteError);
+  if(errorDeleted){
+    console.error("Error al borrar notis " + errorDeleted);
   }
-
   const { data: inscripciones, errorInscripcion } = await supabase
     .from('inscripciones')
     .select(`
