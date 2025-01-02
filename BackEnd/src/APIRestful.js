@@ -25,10 +25,10 @@ app.use('/comentario', commentsRoutes);
 app.use('/valoracion', ratingRoutes);
 app.use('/insignia', insigniaRoutes);
 
-app.post('/notifications', async (req, res) => {
+app.post('/notificaciones', async (req, res) => {
   const { userID } = req.body;
   const notifications = await checkEvents(userID);
-  res.json(notifications);
+  res.status(200).json(notifications);
 });
 
 
@@ -54,8 +54,6 @@ async function checkEvents(userID) {
   const [hourNow, minuteNow, secondNow] = timePartNow.split(':');
   
   const fechaNow = new Date(yearNow, monthNow - 1, dayNow, hourNow, minuteNow, secondNow);
-
-  //SELECCIONAR LAS INSCRIPCIONES CON USERID CORRESPONDIENTE Y NOTIFICACION FALSE
 
   const { data: inscripciones, errorInscripcion } = await supabase
     .from('inscripciones')
@@ -116,7 +114,7 @@ for(const inscripcion of inscripciones){
   }
 }
 
-const { data: notifications, error } = await supabase
+const { data: notificaciones, error } = await supabase
     .from('notificaciones')
     .select('*')
     .eq('userID', userID)
@@ -127,7 +125,8 @@ const { data: notifications, error } = await supabase
     return [];
   }
 
-  return notifications;
+  return notificaciones;
+  
 
 }
 
