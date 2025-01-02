@@ -95,7 +95,7 @@ for(const inscripcion of inscripciones){
           .from('notificaciones')
           .insert({
             userID: userID,
-            mensaje: `El evento ${evento.nombre} comenzará en menos de 1 hora`,
+            mensaje: `El evento ${evento.nombre} comenzará en ${minutosRestantes} minutos. Date prisa!`,
           });
 
           if(notiError){
