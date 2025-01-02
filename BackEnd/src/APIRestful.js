@@ -56,14 +56,6 @@ async function checkEvents(userID) {
   const fechaNow = new Date(yearNow, monthNow - 1, dayNow, hourNow, minuteNow, secondNow);
 
 
-  const {data: deleted, errorDeleted} = await supabase
-    .from('notificaciones')
-    .delete()
-    .lt('fecha_creacion', new Date().toISOString());
-
-  if(errorDeleted){
-    console.error("Error al borrar notis " + errorDeleted);
-  }
   const { data: inscripciones, errorInscripcion } = await supabase
     .from('inscripciones')
     .select(`
@@ -116,6 +108,15 @@ for(const inscripcion of inscripciones){
           .eq('id', inscripcion.id);
 
         console.log("✓ Notificación enviada y registro actualizado");
+
+        const {data: deleted, errorDeleted} = await supabase
+          .from('notificaciones')
+          .delete()
+          .lt('fecha_creacion', supabase.raw(evento.fecha)); 
+
+        if (errorDeleted) {
+          console.error("Error al borrar notis " + errorDeleted);
+        }
       }
 
 
