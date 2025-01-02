@@ -112,7 +112,7 @@ for(const inscripcion of inscripciones){
         const {data: deleted, errorDeleted} = await supabase
           .from('notificaciones')
           .delete()
-          .lt('fecha_creacion', supabase.raw(evento.fecha)); 
+          .lt('fecha_creacion', evento.fecha); 
 
         if (errorDeleted) {
           console.error("Error al borrar notis " + errorDeleted);
