@@ -138,6 +138,8 @@ const { data: notificaciones, error } = await supabase
     return [];
   }
 
+  console.log(notificaciones);
+
   return notificaciones;
   
 
