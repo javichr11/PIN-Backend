@@ -178,15 +178,32 @@ async function checkEvents(userID) {
 
   console.log("Notificaciones sin filtrar:", notificaciones);
 
-  // Solo filtramos por fecha si la notificación es de tipo recordatorio_evento
+  // Filtramos las notificaciones
   const notificacionesFiltradas = notificaciones.filter(notificacion => {
-    if (notificacion.tipo === 'recordatorio_evento') {
-      const fechaEvento = new Date(notificacion.eventos?.fecha);
-      const fechaCreacion = new Date(notificacion.fecha_creacion);
-      return fechaCreacion > fechaEvento;
+    // Para notificaciones de nueva inscripción, mostrar siempre
+    if (notificacion.tipo === 'nueva_inscripcion') {
+      return true;
     }
-    // Las notificaciones de nueva_inscripcion se muestran siempre
-    return true;
+    
+    // Para recordatorios de eventos
+    if (notificacion.tipo === 'recordatorio_evento' && notificacion.eventos) {
+      const fechaEvento = new Date(notificacion.eventos.fecha);
+      const fechaCreacion = new Date(notificacion.fecha_creacion);
+      
+      // Convertir ambas fechas a la misma zona horaria (UTC)
+      const fechaEventoUTC = fechaEvento.getTime();
+      const fechaCreacionUTC = fechaCreacion.getTime();
+
+      console.log('Fecha evento UTC:', fechaEventoUTC);
+      console.log('Fecha creación UTC:', fechaCreacionUTC);
+      console.log('Diferencia en minutos:', (fechaCreacionUTC - fechaEventoUTC) / (1000 * 60));
+
+      // Mostramos las notificaciones que fueron creadas hasta 60 minutos antes del evento
+      const diferenciaEnMinutos = (fechaEventoUTC - fechaCreacionUTC) / (1000 * 60);
+      return diferenciaEnMinutos >= 0 && diferenciaEnMinutos <= 60;
+    }
+    
+    return false;
   });
 
   console.log("Notificaciones filtradas:", notificacionesFiltradas);
