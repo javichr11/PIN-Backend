@@ -29,27 +29,14 @@ app.post('/notificaciones', async (req, res) => {
   res.status(200).json(notifications);
 });
 
+function formatFechaEspanol(fecha) {
+  return fecha.toISOString();
+}
+
 async function checkEvents(userID) {
-  const formatoEspañol = new Intl.DateTimeFormat('es-ES', {
-    timeZone: 'Europe/Madrid',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false
-  });
-
-  const nowUTC = new Date();
-  const now = formatoEspañol.format(nowUTC);
-
-  const [datePartNow, timePartNow] = now.split(', ');
-  const [dayNow, monthNow, yearNow] = datePartNow.split('/');
-  const [hourNow, minuteNow, secondNow] = timePartNow.split(':');
+  // Obtener la fecha actual en UTC
+  const now = new Date();
   
-  const fechaNow = new Date(yearNow, monthNow - 1, dayNow, hourNow, minuteNow, secondNow);
-
   // Verificar inscripciones nuevas para notificar al creador del evento
   const { data: nuevasInscripciones, error: errorNuevasInscripciones } = await supabase
     .from('inscripciones')
@@ -81,7 +68,7 @@ async function checkEvents(userID) {
               eventID: inscripcion.eventID,
               mensaje: `${inscripcion.usuarios.nombre} se ha inscrito a tu evento "${inscripcion.eventos.nombre}"`,
               tipo: 'nueva_inscripcion',
-              fecha_creacion: formatFechaEspanol(new Date())
+              fecha_creacion: new Date().toISOString()
             });
 
           if (notiError) {
@@ -112,7 +99,7 @@ async function checkEvents(userID) {
 
   if (errorInscripcion) {
     console.error('Error comprobando las inscripciones:', errorInscripcion);
-    return;
+    return [];
   }
 
   for(const inscripcion of inscripciones) {
@@ -124,38 +111,48 @@ async function checkEvents(userID) {
         .single();
 
       if (eventoError) {
-        console.error("Error en la búsqueda de eventos");
-        console.error(eventoError);
+        console.error("Error en la búsqueda de eventos:", eventoError);
+        continue;
+      }
+
+      if (!evento || !evento.fecha) {
+        console.log("Evento o fecha no encontrada para inscripción:", inscripcion.id);
         continue;
       }
 
       const fechaEvento = new Date(evento.fecha);
-      const tiempoRestante = fechaEvento.getTime() - fechaNow.getTime();
+      const tiempoRestante = fechaEvento.getTime() - now.getTime();
       const minutosRestantes = Math.floor(tiempoRestante / (1000 * 60));
 
+      console.log(`Debug - Evento: ${evento.nombre}`);
+      console.log(`Debug - Fecha evento: ${fechaEvento}`);
+      console.log(`Debug - Fecha actual: ${now}`);
+      console.log(`Debug - Minutos restantes: ${minutosRestantes}`);
+
       if (minutosRestantes > 0 && minutosRestantes <= 60) {
-        const { data: noti, error: notiError } = await supabase
+        const { error: notiError } = await supabase
           .from('notificaciones')
           .insert({
             userID: userID,
             eventID: inscripcion.eventID,
-            mensaje: `El evento ${evento.nombre} comenzará en ${minutosRestantes} minutos. Date prisa!`,
-            tipo: 'recordatorio_evento'
+            mensaje: `El evento ${evento.nombre} comenzará en ${minutosRestantes} minutos. ¡Date prisa!`,
+            tipo: 'recordatorio_evento',
+            fecha_creacion: new Date().toISOString()
           });
 
         if(notiError) {
           console.error('Error al insertar la notificación:', notiError);
+        } else {
+          await supabase
+            .from('inscripciones')
+            .update({ notificacion_enviada: true })
+            .eq('id', inscripcion.id);
+
+          console.log("✓ Notificación enviada y registro actualizado");
         }
-
-        await supabase
-          .from('inscripciones')
-          .update({ notificacion_enviada: true })
-          .eq('id', inscripcion.id);
-
-        console.log("✓ Notificación enviada y registro actualizado");
       }
     } catch(error) {
-      console.error('Error al buscar el evento:', error);
+      console.error('Error al procesar el evento:', error);
     }
   }
 
@@ -188,18 +185,18 @@ async function checkEvents(userID) {
     
     // Para recordatorios de eventos
     if (notificacion.tipo === 'recordatorio_evento' && notificacion.eventos) {
-      const fechaEvento = new Date(notificacion.eventos.fecha); // Fecha del evento
-      const fechaCreacion = new Date(notificacion.fecha_creacion); // Fecha de creación de la notificación
+      const fechaEvento = new Date(notificacion.eventos.fecha);
+      const fechaActual = new Date();
       
-      // Convertir ambas fechas a UTC para evitar inconsistencias
-      const diferenciaEnMilisegundos = fechaEvento.getTime() - fechaCreacion.getTime();
-      const diferenciaEnMinutos = diferenciaEnMilisegundos / (1000 * 60);
-    
-      console.log('Fecha evento UTC:', fechaEvento.getTime());
-      console.log('Fecha creación UTC:', fechaCreacion.getTime());
-      console.log('Diferencia en minutos:', diferenciaEnMinutos);
-    
-      // Mostrar las notificaciones creadas hasta 60 minutos antes del evento
+      // Calculamos la diferencia en minutos
+      const diferenciaEnMilisegundos = fechaEvento.getTime() - fechaActual.getTime();
+      const diferenciaEnMinutos = Math.floor(diferenciaEnMilisegundos / (1000 * 60));
+      
+      console.log(`Debug - Notificación para evento: ${notificacion.eventos.nombre}`);
+      console.log(`Debug - Fecha evento: ${fechaEvento}`);
+      console.log(`Debug - Fecha actual: ${fechaActual}`);
+      console.log(`Debug - Diferencia en minutos: ${diferenciaEnMinutos}`);
+      
       return diferenciaEnMinutos >= 0 && diferenciaEnMinutos <= 60;
     }
     
@@ -207,7 +204,6 @@ async function checkEvents(userID) {
   });
 
   console.log("Notificaciones filtradas:", notificacionesFiltradas);
-
   return notificacionesFiltradas;
 }
 
