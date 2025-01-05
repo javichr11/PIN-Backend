@@ -98,7 +98,7 @@ async function checkEvents(userID) {
     }
   }
 
-  // Verificar próximos eventos (código original)
+  // Verificar próximos eventos
   const { data: inscripciones, errorInscripcion } = await supabase
     .from('inscripciones')
     .select(`
@@ -158,13 +158,14 @@ async function checkEvents(userID) {
     }
   }
 
-  // Obtener todas las notificaciones filtradas
+  // Obtener todas las notificaciones
   const { data: notificaciones, error } = await supabase
     .from('notificaciones')
     .select(`
       *,
-      eventos!inner (
-        fecha
+      eventos (
+        fecha,
+        nombre
       )
     `)
     .eq('userID', userID)
@@ -175,11 +176,20 @@ async function checkEvents(userID) {
     return [];
   }
 
+  console.log("Notificaciones sin filtrar:", notificaciones);
+
+  // Solo filtramos por fecha si la notificación es de tipo recordatorio_evento
   const notificacionesFiltradas = notificaciones.filter(notificacion => {
-    const fechaEvento = new Date(notificacion.eventos.fecha);
-    const fechaCreacion = new Date(notificacion.fecha_creacion);
-    return fechaCreacion > fechaEvento;
+    if (notificacion.tipo === 'recordatorio_evento') {
+      const fechaEvento = new Date(notificacion.eventos?.fecha);
+      const fechaCreacion = new Date(notificacion.fecha_creacion);
+      return fechaCreacion > fechaEvento;
+    }
+    // Las notificaciones de nueva_inscripcion se muestran siempre
+    return true;
   });
+
+  console.log("Notificaciones filtradas:", notificacionesFiltradas);
 
   return notificacionesFiltradas;
 }
