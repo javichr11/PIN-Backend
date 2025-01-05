@@ -29,13 +29,21 @@ app.post('/notificaciones', async (req, res) => {
   res.status(200).json(notifications);
 });
 
-function formatFechaEspanol(fecha) {
-  return fecha.toISOString();
+function getSpanishDateTime() {
+  // Crear fecha en UTC
+  const now = new Date();
+  // Ajustar a la zona horaria española (GMT+1)
+  const spanishTime = new Date(now.getTime() + (1 * 60 * 60 * 1000));
+  return spanishTime;
+}
+
+function adjustToSpanishTime(date) {
+  return new Date(date.getTime() + (1 * 60 * 60 * 1000));
 }
 
 async function checkEvents(userID) {
-  // Obtener la fecha actual en UTC
-  const now = new Date();
+  // Obtener la fecha actual en hora española
+  const now = getSpanishDateTime();
   
   // Verificar inscripciones nuevas para notificar al creador del evento
   const { data: nuevasInscripciones, error: errorNuevasInscripciones } = await supabase
@@ -68,7 +76,7 @@ async function checkEvents(userID) {
               eventID: inscripcion.eventID,
               mensaje: `${inscripcion.usuarios.nombre} se ha inscrito a tu evento "${inscripcion.eventos.nombre}"`,
               tipo: 'nueva_inscripcion',
-              fecha_creacion: new Date().toISOString()
+              fecha_creacion: now.toISOString()
             });
 
           if (notiError) {
@@ -120,13 +128,13 @@ async function checkEvents(userID) {
         continue;
       }
 
-      const fechaEvento = new Date(evento.fecha);
+      const fechaEvento = adjustToSpanishTime(new Date(evento.fecha));
       const tiempoRestante = fechaEvento.getTime() - now.getTime();
       const minutosRestantes = Math.floor(tiempoRestante / (1000 * 60));
 
       console.log(`Debug - Evento: ${evento.nombre}`);
-      console.log(`Debug - Fecha evento: ${fechaEvento}`);
-      console.log(`Debug - Fecha actual: ${now}`);
+      console.log(`Debug - Fecha evento (ES): ${fechaEvento.toLocaleString('es-ES', { timeZone: 'Europe/Madrid' })}`);
+      console.log(`Debug - Fecha actual (ES): ${now.toLocaleString('es-ES', { timeZone: 'Europe/Madrid' })}`);
       console.log(`Debug - Minutos restantes: ${minutosRestantes}`);
 
       if (minutosRestantes > 0 && minutosRestantes <= 60) {
@@ -137,7 +145,7 @@ async function checkEvents(userID) {
             eventID: inscripcion.eventID,
             mensaje: `El evento ${evento.nombre} comenzará en ${minutosRestantes} minutos. ¡Date prisa!`,
             tipo: 'recordatorio_evento',
-            fecha_creacion: new Date().toISOString()
+            fecha_creacion: now.toISOString()
           });
 
         if(notiError) {
@@ -185,16 +193,15 @@ async function checkEvents(userID) {
     
     // Para recordatorios de eventos
     if (notificacion.tipo === 'recordatorio_evento' && notificacion.eventos) {
-      const fechaEvento = new Date(notificacion.eventos.fecha);
-      const fechaActual = new Date();
+      const fechaEvento = adjustToSpanishTime(new Date(notificacion.eventos.fecha));
       
       // Calculamos la diferencia en minutos
-      const diferenciaEnMilisegundos = fechaEvento.getTime() - fechaActual.getTime();
+      const diferenciaEnMilisegundos = fechaEvento.getTime() - now.getTime();
       const diferenciaEnMinutos = Math.floor(diferenciaEnMilisegundos / (1000 * 60));
       
       console.log(`Debug - Notificación para evento: ${notificacion.eventos.nombre}`);
-      console.log(`Debug - Fecha evento: ${fechaEvento}`);
-      console.log(`Debug - Fecha actual: ${fechaActual}`);
+      console.log(`Debug - Fecha evento (ES): ${fechaEvento.toLocaleString('es-ES', { timeZone: 'Europe/Madrid' })}`);
+      console.log(`Debug - Fecha actual (ES): ${now.toLocaleString('es-ES', { timeZone: 'Europe/Madrid' })}`);
       console.log(`Debug - Diferencia en minutos: ${diferenciaEnMinutos}`);
       
       return diferenciaEnMinutos >= 0 && diferenciaEnMinutos <= 60;
