@@ -29,9 +29,14 @@ app.post('/notificaciones', async (req, res) => {
   res.status(200).json(notifications);
 });
 
-async function checkEvents(userID) {
-  // Obtener la fecha actual
+function getCurrentSpanishTime() {
   const now = new Date();
+  return new Date(now.getTime() + (60 * 60 * 1000)); // Añadir 1 hora para España
+}
+
+async function checkEvents(userID) {
+  // Obtener la fecha actual en hora española
+  const now = getCurrentSpanishTime();
   
   // Verificar inscripciones nuevas para notificar al creador del evento
   const { data: nuevasInscripciones, error: errorNuevasInscripciones } = await supabase
@@ -121,8 +126,8 @@ async function checkEvents(userID) {
       const minutosRestantes = Math.floor(tiempoRestante / (1000 * 60));
 
       console.log(`Debug - Evento: ${evento.nombre}`);
-      console.log(`Debug - Fecha evento: ${fechaEvento.toLocaleString()}`);
-      console.log(`Debug - Fecha actual: ${now.toLocaleString()}`);
+      console.log(`Debug - Fecha evento: ${fechaEvento.toLocaleString('es-ES')}`);
+      console.log(`Debug - Fecha actual: ${now.toLocaleString('es-ES')}`);
       console.log(`Debug - Minutos restantes: ${minutosRestantes}`);
 
       if (minutosRestantes > 0 && minutosRestantes <= 60) {
@@ -188,8 +193,8 @@ async function checkEvents(userID) {
       const diferenciaEnMinutos = Math.floor(diferenciaEnMilisegundos / (1000 * 60));
       
       console.log(`Debug - Notificación para evento: ${notificacion.eventos.nombre}`);
-      console.log(`Debug - Fecha evento: ${fechaEvento.toLocaleString()}`);
-      console.log(`Debug - Fecha actual: ${now.toLocaleString()}`);
+      console.log(`Debug - Fecha evento: ${fechaEvento.toLocaleString('es-ES')}`);
+      console.log(`Debug - Fecha actual: ${now.toLocaleString('es-ES')}`);
       console.log(`Debug - Diferencia en minutos: ${diferenciaEnMinutos}`);
       
       return diferenciaEnMinutos >= 0 && diferenciaEnMinutos <= 60;
