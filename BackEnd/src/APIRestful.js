@@ -50,6 +50,58 @@ async function checkEvents(userID) {
   
   const fechaNow = new Date(yearNow, monthNow - 1, dayNow, hourNow, minuteNow, secondNow);
 
+  // Verificar inscripciones nuevas para notificar al creador del evento
+  const { data: nuevasInscripciones, error: errorNuevasInscripciones } = await supabase
+    .from('inscripciones')
+    .select(`
+      id,
+      userID,
+      eventID,
+      notificacion_creador_enviada,
+      usuarios!inscripciones_userID_fkey (
+        nombre,
+        apellidos
+      ),
+      eventos!inscripciones_eventID_fkey (
+        nombre,
+        userID
+      )
+    `)
+    .eq('notificacion_creador_enviada', false);
+
+  if (errorNuevasInscripciones) {
+    console.error('Error comprobando nuevas inscripciones:', errorNuevasInscripciones);
+  } else {
+    for (const inscripcion of nuevasInscripciones) {
+      if (inscripcion.eventos.userID === userID) {
+        try {
+          const nombreCompleto = `${inscripcion.usuarios.nombre} ${inscripcion.usuarios.apellidos}`;
+          
+          const { error: notiError } = await supabase
+            .from('notificaciones')
+            .insert({
+              userID: userID,
+              eventID: inscripcion.eventID,
+              mensaje: `${nombreCompleto} se ha inscrito a tu evento "${inscripcion.eventos.nombre}"`,
+              tipo: 'nueva_inscripcion'
+            });
+
+          if (notiError) {
+            console.error('Error al insertar notificación de nueva inscripción:', notiError);
+          } else {
+            await supabase
+              .from('inscripciones')
+              .update({ notificacion_creador_enviada: true })
+              .eq('id', inscripcion.id);
+          }
+        } catch (error) {
+          console.error('Error al procesar nueva inscripción:', error);
+        }
+      }
+    }
+  }
+
+  // Verificar próximos eventos (código original)
   const { data: inscripciones, errorInscripcion } = await supabase
     .from('inscripciones')
     .select(`
@@ -88,8 +140,9 @@ async function checkEvents(userID) {
           .from('notificaciones')
           .insert({
             userID: userID,
-            eventID: inscripcion.eventID,  
+            eventID: inscripcion.eventID,
             mensaje: `El evento ${evento.nombre} comenzará en ${minutosRestantes} minutos. Date prisa!`,
+            tipo: 'recordatorio_evento'
           });
 
         if(notiError) {
@@ -108,6 +161,7 @@ async function checkEvents(userID) {
     }
   }
 
+  // Obtener todas las notificaciones filtradas
   const { data: notificaciones, error } = await supabase
     .from('notificaciones')
     .select(`
@@ -130,7 +184,6 @@ async function checkEvents(userID) {
     return fechaCreacion > fechaEvento;
   });
 
-  console.log(notificacionesFiltradas);
   return notificacionesFiltradas;
 }
 
