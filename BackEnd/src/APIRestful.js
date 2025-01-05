@@ -9,8 +9,6 @@ const cron = require('node-cron');
 const fetch = require('node-fetch');
 const supabase = require('./config/supabase'); 
 
-
-
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -31,10 +29,7 @@ app.post('/notificaciones', async (req, res) => {
   res.status(200).json(notifications);
 });
 
-
-
 async function checkEvents(userID) {
-
   const formatoEspañol = new Intl.DateTimeFormat('es-ES', {
     timeZone: 'Europe/Madrid',
     year: 'numeric',
@@ -55,7 +50,6 @@ async function checkEvents(userID) {
   
   const fechaNow = new Date(yearNow, monthNow - 1, dayNow, hourNow, minuteNow, secondNow);
 
-
   const { data: inscripciones, errorInscripcion } = await supabase
     .from('inscripciones')
     .select(`
@@ -66,14 +60,14 @@ async function checkEvents(userID) {
     .eq('notificacion_enviada', false)
     .eq('userID', userID);
 
-    if (errorInscripcion) {
-      console.error('Error comprobando las inscripciones:', errorInscripcion);
-      return;
-    }
+  if (errorInscripcion) {
+    console.error('Error comprobando las inscripciones:', errorInscripcion);
+    return;
+  }
 
-for(const inscripcion of inscripciones){
-  try{
-    const { data: evento, error: eventoError } = await supabase
+  for(const inscripcion of inscripciones) {
+    try {
+      const { data: evento, error: eventoError } = await supabase
         .from('eventos')
         .select('nombre, fecha')
         .eq('id', inscripcion.eventID)
@@ -84,10 +78,9 @@ for(const inscripcion of inscripciones){
         console.error(eventoError);
         continue;
       }
+
       const fechaEvento = new Date(evento.fecha);
-
       const tiempoRestante = fechaEvento.getTime() - fechaNow.getTime();
-
       const minutosRestantes = Math.floor(tiempoRestante / (1000 * 60));
 
       if (minutosRestantes > 0 && minutosRestantes <= 60) {
@@ -95,12 +88,13 @@ for(const inscripcion of inscripciones){
           .from('notificaciones')
           .insert({
             userID: userID,
+            eventID: inscripcion.eventID,  
             mensaje: `El evento ${evento.nombre} comenzará en ${minutosRestantes} minutos. Date prisa!`,
           });
 
-          if(notiError){
-            console.error('Error al insertar la notificación:', notiError);
-          }
+        if(notiError) {
+          console.error('Error al insertar la notificación:', notiError);
+        }
 
         await supabase
           .from('inscripciones')
@@ -108,28 +102,20 @@ for(const inscripcion of inscripciones){
           .eq('id', inscripcion.id);
 
         console.log("✓ Notificación enviada y registro actualizado");
-
-        const {data: deleted, errorDeleted} = await supabase
-          .from('notificaciones')
-          .delete()
-          .lt('fecha_creacion', evento.fecha); 
-
-          console.log("Notificaciones eliminadas: " + deleted);
-
-        if (errorDeleted) {
-          console.error("Error al borrar notis " + errorDeleted);
-        }
       }
-
-
-  }catch(error){
-    console.error('Error al buscar el evento:', error);
+    } catch(error) {
+      console.error('Error al buscar el evento:', error);
+    }
   }
-}
 
-const { data: notificaciones, error } = await supabase
+  const { data: notificaciones, error } = await supabase
     .from('notificaciones')
-    .select('*')
+    .select(`
+      *,
+      eventos!inner (
+        fecha
+      )
+    `)
     .eq('userID', userID)
     .order('fecha_creacion', { ascending: false });
 
@@ -138,11 +124,14 @@ const { data: notificaciones, error } = await supabase
     return [];
   }
 
-  console.log(notificaciones);
+  const notificacionesFiltradas = notificaciones.filter(notificacion => {
+    const fechaEvento = new Date(notificacion.eventos.fecha);
+    const fechaCreacion = new Date(notificacion.fecha_creacion);
+    return fechaCreacion > fechaEvento;
+  });
 
-  return notificaciones;
-  
-
+  console.log(notificacionesFiltradas);
+  return notificacionesFiltradas;
 }
 
 app.listen(PORT, '0.0.0.0', () => {
