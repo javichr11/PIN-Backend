@@ -80,7 +80,8 @@ async function checkEvents(userID) {
               userID: userID,
               eventID: inscripcion.eventID,
               mensaje: `${inscripcion.usuarios.nombre} se ha inscrito a tu evento "${inscripcion.eventos.nombre}"`,
-              tipo: 'nueva_inscripcion'
+              tipo: 'nueva_inscripcion',
+              fecha_creacion: formatFechaEspanol(new Date())
             });
 
           if (notiError) {
