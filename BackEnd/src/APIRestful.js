@@ -187,19 +187,18 @@ async function checkEvents(userID) {
     
     // Para recordatorios de eventos
     if (notificacion.tipo === 'recordatorio_evento' && notificacion.eventos) {
-      const fechaEvento = new Date(notificacion.eventos.fecha);
-      const fechaCreacion = new Date(notificacion.fecha_creacion);
+      const fechaEvento = new Date(notificacion.eventos.fecha); // Fecha del evento
+      const fechaCreacion = new Date(notificacion.fecha_creacion); // Fecha de creación de la notificación
       
-      // Convertir ambas fechas a la misma zona horaria (UTC)
-      const fechaEventoUTC = fechaEvento.getTime();
-      const fechaCreacionUTC = fechaCreacion.getTime();
-
-      console.log('Fecha evento UTC:', fechaEventoUTC);
-      console.log('Fecha creación UTC:', fechaCreacionUTC);
-      console.log('Diferencia en minutos:', (fechaCreacionUTC - fechaEventoUTC) / (1000 * 60));
-
-      // Mostramos las notificaciones que fueron creadas hasta 60 minutos antes del evento
-      const diferenciaEnMinutos = (fechaEventoUTC - fechaCreacionUTC) / (1000 * 60);
+      // Convertir ambas fechas a UTC para evitar inconsistencias
+      const diferenciaEnMilisegundos = fechaEvento.getTime() - fechaCreacion.getTime();
+      const diferenciaEnMinutos = diferenciaEnMilisegundos / (1000 * 60);
+    
+      console.log('Fecha evento UTC:', fechaEvento.getTime());
+      console.log('Fecha creación UTC:', fechaCreacion.getTime());
+      console.log('Diferencia en minutos:', diferenciaEnMinutos);
+    
+      // Mostrar las notificaciones creadas hasta 60 minutos antes del evento
       return diferenciaEnMinutos >= 0 && diferenciaEnMinutos <= 60;
     }
     
