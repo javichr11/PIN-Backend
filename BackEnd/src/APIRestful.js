@@ -59,8 +59,7 @@ async function checkEvents(userID) {
       eventID,
       notificacion_creador_enviada,
       usuarios!inscripciones_userID_fkey (
-        nombre,
-        apellidos
+        nombre
       ),
       eventos!inscripciones_eventID_fkey (
         nombre,
@@ -75,14 +74,12 @@ async function checkEvents(userID) {
     for (const inscripcion of nuevasInscripciones) {
       if (inscripcion.eventos.userID === userID) {
         try {
-          const nombreCompleto = `${inscripcion.usuarios.nombre} ${inscripcion.usuarios.apellidos}`;
-          
           const { error: notiError } = await supabase
             .from('notificaciones')
             .insert({
               userID: userID,
               eventID: inscripcion.eventID,
-              mensaje: `${nombreCompleto} se ha inscrito a tu evento "${inscripcion.eventos.nombre}"`,
+              mensaje: `${inscripcion.usuarios.nombre} se ha inscrito a tu evento "${inscripcion.eventos.nombre}"`,
               tipo: 'nueva_inscripcion'
             });
 
