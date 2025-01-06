@@ -125,11 +125,6 @@ async function checkEvents(userID) {
       const tiempoRestante = fechaEvento.getTime() - now.getTime();
       const minutosRestantes = Math.floor(tiempoRestante / (1000 * 60));
 
-      console.log(`Debug - Evento: ${evento.nombre}`);
-      console.log(`Debug - Fecha evento: ${fechaEvento.toLocaleString('es-ES')}`);
-      console.log(`Debug - Fecha actual: ${now.toLocaleString('es-ES')}`);
-      console.log(`Debug - Minutos restantes: ${minutosRestantes}`);
-
       if (minutosRestantes > 0 && minutosRestantes <= 60) {
         const { error: notiError } = await supabase
           .from('notificaciones')
@@ -175,20 +170,14 @@ async function checkEvents(userID) {
     return [];
   }
 
-  console.log("Notificaciones sin filtrar:", notificaciones);
-
   // Filtramos las notificaciones
   const notificacionesFiltradas = notificaciones.filter(notificacion => {
-    // Para notificaciones de nueva inscripción, mostrar siempre
     if (notificacion.tipo === 'nueva_inscripcion') {
       return true;
     }
     
-    // Para recordatorios de eventos
     if (notificacion.tipo === 'recordatorio_evento' && notificacion.eventos) {
       const fechaEvento = new Date(notificacion.eventos.fecha);
-      
-      // Calculamos la diferencia en minutos
       const diferenciaEnMilisegundos = fechaEvento.getTime() - now.getTime();
       const diferenciaEnMinutos = Math.floor(diferenciaEnMilisegundos / (1000 * 60));
       return diferenciaEnMinutos >= 0 && diferenciaEnMinutos <= 60;
@@ -197,7 +186,6 @@ async function checkEvents(userID) {
     return false;
   });
 
-  console.log("Notificaciones filtradas:", notificacionesFiltradas);
   return notificacionesFiltradas;
 }
 
