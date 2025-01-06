@@ -67,7 +67,7 @@ async function checkEvents(userID) {
             .insert({
               userID: userID,
               eventID: inscripcion.eventID,
-              mensaje: `${inscripcion.usuarios.nombre} se ha inscrito a tu evento "${inscripcion.eventos.nombre}"`,
+              mensaje: `${inscripcion.usuarios.nombre} se ha inscrito a tu evento`,
               tipo: 'nueva_inscripcion',
               fecha_creacion: now.toISOString()
             });
@@ -136,7 +136,7 @@ async function checkEvents(userID) {
           .insert({
             userID: userID,
             eventID: inscripcion.eventID,
-            mensaje: `El evento ${evento.nombre} comenzará en ${minutosRestantes} minutos. ¡Date prisa!`,
+            mensaje: `El evento ${evento.nombre} comenzará pronto. ¡Date prisa!`,
             tipo: 'recordatorio_evento',
             fecha_creacion: now.toISOString()
           });
@@ -191,12 +191,6 @@ async function checkEvents(userID) {
       // Calculamos la diferencia en minutos
       const diferenciaEnMilisegundos = fechaEvento.getTime() - now.getTime();
       const diferenciaEnMinutos = Math.floor(diferenciaEnMilisegundos / (1000 * 60));
-      
-      console.log(`Debug - Notificación para evento: ${notificacion.eventos.nombre}`);
-      console.log(`Debug - Fecha evento: ${fechaEvento.toLocaleString('es-ES')}`);
-      console.log(`Debug - Fecha actual: ${now.toLocaleString('es-ES')}`);
-      console.log(`Debug - Diferencia en minutos: ${diferenciaEnMinutos}`);
-      
       return diferenciaEnMinutos >= 0 && diferenciaEnMinutos <= 60;
     }
     
