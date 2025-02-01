@@ -11,12 +11,7 @@ const upload = multer({ storage: storage });
 exports.crearEventos = async (req, res) => {
     try {
         const { userID, nombre, descripcion, tematica, ubicacion, aforo, fecha, duracion, latitud, longitud } = req.body;
-        const foto = req.file; // La imagen 
-        
-    
-        //if (!sitio) {
-          // () return res.status(400).json({ message: 'La ubicación es obligatoria.' });
-         // }
+        const foto = req.file; // La imagen cargada
   
         const camposFaltantes = [];
 
@@ -97,10 +92,9 @@ exports.crearEventos = async (req, res) => {
                     aforo,
                     fecha,
                     duracion,
-                    //sitio: sitioParsed,
-                    longitud,
+                    foto: fotoURL,
                     latitud,
-                    foto: fotoURL
+                    longitud
                 }
             ]);
   
@@ -254,14 +248,74 @@ exports.inscribirAEvento = async (req, res) => {
     }
 };
 
+exports.obtenerEventosPorAutor = async (req, res) => {
+    const { userID } = req.params;
+
+    try {
+        const { data, error } = await supabase
+            .from('eventos')
+            .select('*')
+            .eq('userID', userID);
+
+        if (error) {
+            return res.status(500).json({ message: 'Error al obtener los eventos', error });
+        }
+
+        return res.status(200).json({ message: 'Eventos obtenidos exitosamente', data });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error del servidor', error });
+    }
+};
+
+async function obtenerInscripciones (req, res) {
+    const { userID } = req.params;
+    const {data, error } = await supabase 
+        .from('inscripciones')
+        .select('eventID')
+        .eq('userID', userID)
+    if (error) {
+        throw new Error(`Error al obtener los eventos: ${error} `);
+    }
+    if (!data) {
+        throw new Error('No se encontraron inscripciones del usuario');
+    }
+    return data;
+}
+
+
+exports.obtenerEventosInscrito = async (req, res) => {
+    const { userID } = req.params;
+
+    try {
+        // Obtener las inscripciones del usuario
+        const inscripciones = await obtenerInscripciones(req, res);
+
+        // Obtener los IDs de los eventos a los que el usuario está inscrito
+        const eventIDs = inscripciones.map(inscripcion => inscripcion.eventID);
+
+        // Obtener los eventos correspondientes a los IDs
+        const { data: eventos, error } = await supabase
+            .from('eventos')
+            .select('*')
+            .in('id', eventIDs);
+
+        if (error) {
+            return res.status(500).json({ message: 'Error al obtener los eventos inscritos', error });
+        }
+
+        return res.status(200).json({ message: 'Eventos inscritos obtenidos exitosamente', data: eventos });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error del servidor', error });
+    }
+};
 // Las funciones de abajo son para obtener eventos filtrados
 // Función para obtener las preferencias del usuario
 // No borrar esta funcion. La funcion export.obtenerEventos no sirve
-async function obtenerPreferencias(usuario_id) {
+async function obtenerPreferencias(userID) {
     const { data, error } = await supabase
         .from('preferencias')
         .select('*')
-        .eq('userID', usuario_id)
+        .eq('userID', userID)
         .single();
 
     if (error) {
@@ -291,16 +345,17 @@ async function obtenerEventos() {
 // Si el evento cumple con alguna preferencia, se anyade a filtrados
 function filtrarEventos(eventos, preferencias) {
     return eventos.filter(evento => {
+        
         const tematicaMatch = preferencias[evento.tematica] || false;
+        console.log("LLEGA AQUÍ");
+        console.log(preferencias[evento.tematica]);
         const ubicacionMatch = preferencias[evento.ubicacion] || false;
 
-        const latitudMatch = preferencias[evento.latitud] || false;
-        const longitudMatch = preferencias[evento.longitud] || false;
         // Extraer la hora del evento y compararla con las preferencias del usuario
         const horaEvento = new Date(evento.fecha).getHours();
         const horaMatch = preferencias[`${horaEvento}:00`] || false;
 
-        return tematicaMatch || ubicacionMatch  || latitudMatch || longitudMatch || horaMatch;
+        return tematicaMatch || ubicacionMatch || horaMatch;
     });
 }
 
