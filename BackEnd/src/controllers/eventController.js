@@ -370,5 +370,20 @@ exports.obtenerEventosFiltrados = async (req, res) => {
 };
 
 exports.obtenerPosteriores = async (req,res) => {
-    return res.status(200).json({message: "Llega bien"});
+    try {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+    
+        const { data, error } = await supabase
+          .from('eventos')
+          .select('*')
+          .gte('fecha', today.toISOString()); 
+      
+        if (error) {
+          return res.status(500).json({ message: 'Error al obtener los eventos', error });
+        }
+        return res.status(200).json({ message: 'Los eventos se deberían de enviar bien', data });
+      } catch (error) {
+        return res.status(500).json({ message: 'Error del servidor', error });
+      }
 };
