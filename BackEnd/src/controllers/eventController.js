@@ -370,23 +370,5 @@ exports.obtenerEventosFiltrados = async (req, res) => {
 };
 
 exports.obtenerPosteriores = async (req,res) => {
-    try {
-        // Obtener la fecha y hora actual en formato UTC (ISO 8601)
-        const fechaActual = new Date().toISOString();
-    
-        const { data, error } = await supabase
-          .from('eventos') // Nombre de la tabla
-          .select('*') // Selecciona todas las columnas
-          .gte('fecha', fechaActual) // Filtra los eventos con fecha mayor o igual a la fecha actual
-          .order('fecha', { ascending: true }); // Ordena los eventos por fecha ascendente
-    
-        if (error) {
-          console.log("El error es: " + error)
-        }
-    
-        return res.status(200).json(data); // Devuelve los eventos filtrados
-      } catch (error) {
-        console.error('Error al obtener eventos:', error.message);
-        return res.status(500).json({ message: 'Error al obtener los eventos' });
-      }
+    return res.status(200).json({message: "Llega bien"});
 };
