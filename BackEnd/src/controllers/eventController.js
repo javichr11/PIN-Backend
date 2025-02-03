@@ -381,7 +381,7 @@ exports.obtenerPosteriores = async (req,res) => {
           .order('fecha', { ascending: true }); // Ordena los eventos por fecha ascendente
     
         if (error) {
-          throw error;
+          console.log("El error es: " + error)
         }
     
         return res.status(200).json(data); // Devuelve los eventos filtrados
