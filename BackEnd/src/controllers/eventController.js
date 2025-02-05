@@ -1,5 +1,5 @@
 const supabase = require('../config/supabase');
-const { actualizarInsigniaCrear } = require('../controllers/insigniaController');
+const { actualizarInsigniaCrear, actualizarInsigniaAsistir } = require('../controllers/insigniaController');
 const { v4: uuidv4 } = require('uuid');
 const multer = require('multer');
 
@@ -211,6 +211,8 @@ exports.inscribirAEvento = async (req, res) => {
             }
 
             try{
+
+                await actualizarInsigniaAsistir(userID, tematica);
 
             }catch(badgeError){}
 

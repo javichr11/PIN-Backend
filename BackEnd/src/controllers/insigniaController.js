@@ -1,7 +1,10 @@
 const supabase = require('../config/supabase');
-const Eco = 8;
-const Deporte = 9;
-const Arte = 10;
+const EcoCrear = 8;
+const DeporteCrear = 9;
+const ArteCrear = 10;
+const ArteAsistir = 5;
+const DeporteAsistir = 4;
+const EcoAsistir = 3;
 
 const actualizarInsigniaCrear = async (userID, tematica) =>{
 
@@ -27,12 +30,12 @@ const actualizarInsigniaCrear = async (userID, tematica) =>{
                 .from('insignias_usuario')
                 .select('*')
                 .eq('userID', userID)
-                .eq('insigniaID', Deporte)
+                .eq('insigniaID', DeporteCrear)
                 .single();
 
                     if(!insigniaUsuarioD){
-                        iniciarInsignia(userID, Deporte, true);
-                        console.log("Se ha creado la insigna con ID: " + Deporte);
+                        iniciarInsignia(userID, DeporteCrear, true);
+                        console.log("Se ha creado la insigna con ID: " + DeporteCrear);
                     }
 
             break;
@@ -41,27 +44,27 @@ const actualizarInsigniaCrear = async (userID, tematica) =>{
                     .from('insignias_usuario')
                     .select('*')
                     .eq('userID', userID)
-                    .eq('insigniaID', Arte)
+                    .eq('insigniaID', ArteCrear)
                     .single();
 
                     if(!insigniaUsuarioA){
-                        iniciarInsignia(userID, Arte, true);
-                        console.log("Se ha creado la insigna con ID: " + Arte);
+                        iniciarInsignia(userID, ArteCrear, true);
+                        console.log("Se ha creado la insigna con ID: " + ArteCrear);
                     }
 
             break;
-            case "eco":
+            case "voluntariado":
 
                 const { data: insigniaUsuarioE, error: selectErrorE } = await supabase
                     .from('insignias_usuario')
                     .select('*')
                     .eq('userID', userID)
-                    .eq('insigniaID', Eco)
+                    .eq('insigniaID', EcoCrear)
                     .single();
 
                     if(!insigniaUsuarioE){
-                        iniciarInsignia(userID, Eco, true);
-                        console.log("Se ha creado la insigna con ID: " + Eco);
+                        iniciarInsignia(userID, EcoCrear, true);
+                        console.log("Se ha creado la insigna con ID: " + EcoCrear);
                     }
                     
             break;
@@ -156,7 +159,76 @@ const actualizarProgreso = async (userID, insigniaID) =>{
 };
 
 const actualizarInsigniaAsistir = async (userID, tematica) =>{
+    try{
+        const { data: insigniaUsuario, error: selectError } = await supabase
+            .from('insignias_usuario')
+            .select('*')
+            .eq('userID', userID)
+            .eq('insigniaID', 1)
+            .single();
 
+        if(insigniaUsuario){
+            actualizarProgreso(userID, 1);
+        }else{
+            iniciarInsignia(userID, 1, false);
+        }
+        console.log("La insignia se ha creado correctamente");
+        console.log(tematica);
+
+        switch(tematica){
+            case "deportes": 
+                const { data: insigniaUsuarioD, error: selectErrorD} = await supabase
+                .from('insignias_usuario')
+                .select('*')
+                .eq('userID', userID)
+                .eq('insigniaID', DeporteAsistir)
+                .single();
+
+                    if(!insigniaUsuarioD){
+                        iniciarInsignia(userID, DeporteAsistir, true);
+                        console.log("Se ha creado la insigna con ID: " + DeporteAsistir);
+                    }
+
+            break;
+            case "arte": 
+                const { data: insigniaUsuarioA, error: selectErrorA } = await supabase
+                    .from('insignias_usuario')
+                    .select('*')
+                    .eq('userID', userID)
+                    .eq('insigniaID', ArteAsistir)
+                    .single();
+
+                    if(!insigniaUsuarioA){
+                        iniciarInsignia(userID, ArteAsistir, true);
+                        console.log("Se ha creado la insigna con ID: " + ArteAsistir);
+                    }
+
+            break;
+            case "voluntariado":
+
+                const { data: insigniaUsuarioE, error: selectErrorE } = await supabase
+                    .from('insignias_usuario')
+                    .select('*')
+                    .eq('userID', userID)
+                    .eq('insigniaID', EcoAsistir)
+                    .single();
+
+                    if(!insigniaUsuarioE){
+                        iniciarInsignia(userID, EcoAsistir, true);
+                        console.log("Se ha creado la insigna con ID: " + EcoAsistir);
+                    }
+                    
+            break;
+            default: 
+                console.log("Aquí no se a entrado en ningún caso");
+            break;
+        }
+
+
+    }catch(error){
+        console.log("Error 1");
+        console.log(error.message);
+    }
 }
 
 
@@ -192,4 +264,4 @@ const obtenerLogradas = async (req,res) =>{
 
 
 
-module.exports = { actualizarInsigniaCrear, iniciarInsignia, actualizarProgreso, obtenerLogradas};
+module.exports = { actualizarInsigniaCrear, actualizarInsigniaAsistir,  iniciarInsignia, actualizarProgreso, obtenerLogradas};
